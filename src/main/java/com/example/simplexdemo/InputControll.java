@@ -15,7 +15,7 @@ public class InputControll {
 
     public String[][] getArray(GridPane gridPane, int row, int col){
         String[][] matrix = new String[row][col];
-        int startIndex = row + col;
+        int startIndex = row + col - 1;
         int endIndex = row * col + startIndex;
         int j = 0;
         int p = 0;
@@ -43,16 +43,21 @@ public class InputControll {
     public GridPane createTable(int row, int col){
         GridPane gridPane = new GridPane();
         // Создаем ячейки с названиями строк
+         int k = 0;
+         for (int j = 0; j < col - 1; j++) {
+             Label columnLabel = new Label("x" + (j + 1));
+             gridPane.add(columnLabel, j + 1, 0);
+             k = j + 1;
+         }
+
         for (int i = 0; i < row; i++) {
-            Label rowLabel = new Label("x" + (i + 1));
+            Label rowLabel = new Label("x" + (k + 1));
             gridPane.add(rowLabel, 0, i + 1);
+            k++;
         }
 
         // Создаем ячейки с названиями столбцов
-        for (int j = 0; j < col; j++) {
-            Label columnLabel = new Label("x" + (j + 1));
-            gridPane.add(columnLabel, j + 1, 0);
-        }
+
 
         // Создаем ячейки с данными
         for (int i = 0; i < row; i++) {

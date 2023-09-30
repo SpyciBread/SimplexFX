@@ -42,17 +42,23 @@ public class HelloApplication extends Application {
         //ScrollPane scrollPane = new ScrollPane();
         GridPane gridPane = new GridPane();
 
-        // Создаем ячейки с названиями строк
-        for (int i = 0; i < row; i++) {
-            Label rowLabel = new Label("x" + (i + 1));
-            gridPane.add(rowLabel, 0, i + 1);
-        }
 
         // Создаем ячейки с названиями столбцов
-        for (int j = 0; j < col; j++) {
+        int k =0;
+        for (int j = 0; j < col - 1; j++) {
             Label columnLabel = new Label("x" + (j + 1));
             gridPane.add(columnLabel, j + 1, 0);
+            k = j + 1;
         }
+
+        // Создаем ячейки с названиями строк
+        for (int i = 0; i < row ; i++) {
+            Label rowLabel = new Label("x" + (k + 1));
+            gridPane.add(rowLabel, 0, i + 1);
+            k++;
+        }
+
+
 
         // Создаем ячейки с данными
         for (int i = 0; i < row; i++) {
