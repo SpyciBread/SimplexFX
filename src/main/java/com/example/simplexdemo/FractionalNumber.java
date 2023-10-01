@@ -43,7 +43,7 @@ public class FractionalNumber {
         return numerator + "/" + denominator;
     }
 
-    public double toDesDrob(String number){
+    public String toDesDrob(String number){
         int numerator;
         int denominator;
         if(number.contains("/")){
@@ -55,7 +55,7 @@ public class FractionalNumber {
             numerator = Integer.parseInt(number);
             denominator = 1;
         }
-        double result = (double) numerator / denominator;
+        String result = "" + (double) numerator / denominator;
         return result;
     }
 

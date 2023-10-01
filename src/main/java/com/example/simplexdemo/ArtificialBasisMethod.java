@@ -1,6 +1,8 @@
 package com.example.simplexdemo;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ArtificialBasisMethod {
     private CalculateSimlex calculateSimlex;
@@ -11,6 +13,14 @@ public class ArtificialBasisMethod {
         this.calculateSimlex = calculateSimlex;
         fractionalNumber = new FractionalNumber();
         simlexMethod = calculateSimlex.getSimlexMethod();
+        Map<Integer, String[][]> stepTable = new HashMap<>();
+        Map<Integer, String[]> basisStep = new HashMap<>();
+        Map<Integer, String[]> notBasisStep = new HashMap<>();
+
+        simlexMethod.setIterationForStep(0);
+        simlexMethod.setBasisSteps(basisStep);
+        simlexMethod.setNotBasisSteps(notBasisStep);
+        simlexMethod.setTableSteps(stepTable);
         getSimplexTable(function, limit);
     }
     public String[][] getSimplexTable(String[] function, String[][] limit){
@@ -24,6 +34,9 @@ public class ArtificialBasisMethod {
         System.out.println(checkAnswer(simlexMethod.getSimplexTable(), simlexMethod.getBasis()));
         simlexMethod.setDownFunction(downFunction);
         simlexMethod.setSimplexTable(calculateSimlex.calculateSimplexTable(newSimplexTable(simlexMethod.getSimplexTable()), downFunction));
+
+
+
         return simlexMethod.getSimplexTable();
         //запись в нижнюю функцию
         // счет
@@ -103,6 +116,7 @@ public class ArtificialBasisMethod {
         System.out.println((Arrays.toString(simlexMethod.getBasis())));
         System.out.println(Arrays.toString(simlexMethod.getNotBasis()));
         simlexMethod.setLimitations(newSimplexTable);
+
         return newSimplexTable;
     }
 

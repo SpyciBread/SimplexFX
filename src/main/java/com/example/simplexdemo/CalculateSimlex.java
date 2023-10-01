@@ -1,8 +1,6 @@
 package com.example.simplexdemo;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class CalculateSimlex {
     private SimlexMethod simlexMethod;
@@ -61,6 +59,7 @@ public class CalculateSimlex {
         notBasis[col] = tmpX;
         simlexMethod.setBasis(basic);
         simlexMethod.setNotBasis(notBasis);
+
         for (int i = 0; i < simplexTable[row].length; i++){
             if(i != col){
                 simplexTable[row][i] = operationWithTwoNumbers(simplexTable[row][i], simplexTable[row][col], "*");
@@ -90,6 +89,11 @@ public class CalculateSimlex {
         System.out.println(Arrays.toString(basic));
         System.out.println(Arrays.toString(notBasis));
         simlexMethod.setSimplexTable(simplexTable);
+
+//        simlexMethod.putBasisSteps(simlexMethod.getIterationForStep(), basic);
+//        simlexMethod.putNotBasisSteps(simlexMethod.getIterationForStep(), notBasis);
+//        simlexMethod.putTableSteps(simlexMethod.getIterationForStep(), simplexTable);
+//        simlexMethod.addIterationForStep();
         getAnswer(simplexTable, simlexMethod.getBasis(), simlexMethod.getNotBasis());
         return simplexTable;
     }
@@ -117,6 +121,7 @@ public class CalculateSimlex {
         int numCols = limit[0].length;
         if(simlexMethod.getIteration() == 0 && simlexMethod.getBasis() == null)
             setX(limit);
+
         simlexMethod.addIteration();
         String[][] simlexTable = new String[numRows + 1][numCols];
         for (int i = 0; i < numRows; i++) {
@@ -133,23 +138,13 @@ public class CalculateSimlex {
             }
 
         }
-
         simlexTable[numRows] = downFunction;
+
         String[][] noSolution = {{"n"},{"n"}};
         simlexMethod.setSimplexTable(simlexTable);
         while (true){
             if(Arrays.deepEquals(helpCalculateSimplexTable(simlexMethod.getSimplexTable(), downFunction), noSolution)){
                 break;
-//                while (true){
-//                    if(Arrays.deepEquals(helpCalculateSimplexTable(simlexMethod.getSimplexTable(), downFunction), wrongSolution)){
-//                        helpCalculateSimplexTable(simlexMethod.getSimplexTable(), downFunction);
-//                    }
-//                    else {
-//                        if (Arrays.deepEquals(helpCalculateSimplexTable(simlexMethod.getSimplexTable(), downFunction), noSolution)){
-//                            return simlexMethod.getSimplexTable();
-//                        }
-//                        else break;
-//                    }
                 }
             else{
                 if(simlexMethod.getMinElInfo().equals("Calculated"))

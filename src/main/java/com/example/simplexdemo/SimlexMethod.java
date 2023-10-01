@@ -1,7 +1,9 @@
 package com.example.simplexdemo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SimlexMethod {
     private FractionalNumber fractionalNumber = new FractionalNumber();
@@ -20,7 +22,44 @@ public class SimlexMethod {
     private List<Integer> negativeElements = new ArrayList<>();
     private int quantityLimit;
     private int negativeElementIndex;
-    private int min;
+    private int iterationForStep;
+    private Map<Integer,String[][]> tableSteps;
+    private Map<Integer,String[]> basisSteps;
+    private Map<Integer,String[]> notBasisSteps;
+
+    public void putBasisSteps(int step, String[] basisSteps) {
+        this.basisSteps.put(step,basisSteps);
+    }
+    public void putNotBasisSteps(int step, String[] notBasisSteps) {
+        this.notBasisSteps.put(step,notBasisSteps);
+    }
+    public Map<Integer, String[]> getBasisSteps() {
+        return basisSteps;
+    }
+
+    public void setBasisSteps(Map<Integer, String[]> basisSteps) {
+        this.basisSteps = basisSteps;
+    }
+
+    public Map<Integer, String[]> getNotBasisSteps() {
+        return notBasisSteps;
+    }
+
+    public void setNotBasisSteps(Map<Integer, String[]> notBasisSteps) {
+        this.notBasisSteps = notBasisSteps;
+    }
+
+    public Map<Integer, String[][]> getTableSteps() {
+        return tableSteps;
+    }
+
+    public void setTableSteps(Map<Integer, String[][]> tableSteps) {
+        this.tableSteps = tableSteps;
+    }
+
+    public void putTableSteps(int step, String[][] tableSteps) {
+        this.tableSteps.put(step,tableSteps);
+    }
 
     public String[][] getAnswerTable() {
         return answerTable;
@@ -118,9 +157,6 @@ public class SimlexMethod {
         this.limitations = limitations;
     }
 
-    public void setMin(int min) {
-        this.min = min;
-    }
 
     public int getNegativeElementIndex() {
         return negativeElementIndex;
@@ -146,11 +182,19 @@ public class SimlexMethod {
         return downFunction;
     }
 
-    public int isMin() {
-        return min;
-    }
-
     public void setFunction(String[] function) {
         this.function = function;
+    }
+
+    public int getIterationForStep() {
+        return iterationForStep;
+    }
+
+    public void setIterationForStep(int iterationForStep) {
+        this.iterationForStep = iterationForStep;
+    }
+
+    public void addIterationForStep() {
+        this.iterationForStep++;
     }
 }
