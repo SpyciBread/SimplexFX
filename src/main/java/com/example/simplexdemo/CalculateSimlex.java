@@ -116,6 +116,50 @@ public class CalculateSimlex {
         simlexMethod.setNotBasis(notBasis);
     }
 
+    public void calculateSimplexTablePoShagam(String[][] limit, String[] downFunction){
+        int numRows = limit.length;
+        int numCols = limit[0].length;
+        if(simlexMethod.getIteration() == 0 && simlexMethod.getBasis() == null)
+            setX(limit);
+
+        simlexMethod.addIteration();
+        String[][] simlexTable = new String[numRows + 1][numCols];
+        for (int i = 0; i < numRows; i++) {
+            for (int j = 0; j < numCols; j++) {
+                simlexTable[i][j] = limit[i][j];
+            }
+        }
+
+        for (int i = 0; i < numRows; i++){
+            if(simlexTable[i][numCols - 1].charAt(0) == '-'){
+                for (int j = 0; j < numRows; j++){
+                    simlexTable[i][j] = operationWithTwoNumbers("-1", simlexTable[i][j], "*");
+                }
+            }
+
+        }
+        simlexTable[numRows] = downFunction;
+        simlexMethod.setSimplexTable(simlexTable);
+    }
+
+    public String[][] helpCalculateSimplexTablePoShagam(String[][] simlexTable, int indexOfMinEl){
+        String minEl = findMinEl(Arrays.copyOfRange(simlexTable[simlexTable.length - 1], 0, simlexTable[0].length - 1));
+
+        if(minEl.equals("Calculated")){
+            simlexMethod.setMinElInfo("Calculated");
+            simlexMethod.setSimplexTable(simlexTable);
+            return simlexTable;
+        }
+
+        if(minEl.equals("Функция неограничена")){
+            simlexMethod.setMinElInfo("Функция неограничена");
+            simlexMethod.setSimplexTable(simlexTable);
+            return new String[][]{{"n"}, {"n"}};
+        }
+
+        return findReferenceE(simlexTable, indexOfMinEl);
+    }
+
     public String[][] calculateSimplexTable(String[][] limit, String[] downFunction){
         int numRows = limit.length;
         int numCols = limit[0].length;
@@ -182,7 +226,7 @@ public class CalculateSimlex {
         }
         return findReferenceE(simlexTable, indexOfMinEl);
     }
-    private String[][] findReferenceE(String[][] simlexTable, int indexOfMinEl) {
+    public String[][] findReferenceE(String[][] simlexTable, int indexOfMinEl) {
         int numRows = simlexTable.length;
         List<String> potentialReferenceElList = new ArrayList<>();
         for(int i = 0; i < numRows - 1; i++){

@@ -9,7 +9,8 @@ public class ArtificialBasisMethod {
     private SimlexMethod simlexMethod;
     private String[] downFunction;
     private FractionalNumber fractionalNumber;
-    public ArtificialBasisMethod(String[] function, String[][] limit, CalculateSimlex calculateSimlex){
+    private boolean steps;
+    public ArtificialBasisMethod(boolean steps, String[] function, String[][] limit, CalculateSimlex calculateSimlex){
         this.calculateSimlex = calculateSimlex;
         fractionalNumber = new FractionalNumber();
         simlexMethod = calculateSimlex.getSimlexMethod();
@@ -21,19 +22,22 @@ public class ArtificialBasisMethod {
         simlexMethod.setBasisSteps(basisStep);
         simlexMethod.setNotBasisSteps(notBasisStep);
         simlexMethod.setTableSteps(stepTable);
+        this.steps = steps;
         getSimplexTable(function, limit);
     }
     public String[][] getSimplexTable(String[] function, String[][] limit){
         simlexMethod.setDownFunction(calculateSimlex.calcualteDownFunction(limit));
         simlexMethod.setIteration(0);
         simlexMethod.setSimplexTable(calculateSimlex.calculateSimplexTable(limit, simlexMethod.getDownFunction()));
-        if(!checkAnswer(simlexMethod.getSimplexTable(), simlexMethod.getBasis()).equals("Ok")){
-            System.out.println(checkAnswer(simlexMethod.getSimplexTable(), simlexMethod.getBasis()));
+        if(!checkAnswer(simlexMethod,simlexMethod.getSimplexTable(), simlexMethod.getBasis()).equals("Ok")){
+            System.out.println(checkAnswer(simlexMethod, simlexMethod.getSimplexTable(), simlexMethod.getBasis()));
             return simlexMethod.getSimplexTable();
         }
-        System.out.println(checkAnswer(simlexMethod.getSimplexTable(), simlexMethod.getBasis()));
-        simlexMethod.setDownFunction(downFunction);
-        simlexMethod.setSimplexTable(calculateSimlex.calculateSimplexTable(newSimplexTable(simlexMethod.getSimplexTable()), downFunction));
+        System.out.println(checkAnswer(simlexMethod, simlexMethod.getSimplexTable(), simlexMethod.getBasis()));
+        if(!steps){
+            simlexMethod.setDownFunction(downFunction);
+            simlexMethod.setSimplexTable(calculateSimlex.calculateSimplexTable(newSimplexTable(simlexMethod.getSimplexTable()), downFunction));
+        }
 
 
 
@@ -42,7 +46,7 @@ public class ArtificialBasisMethod {
         // счет
     }
 
-    public String checkAnswer(String[][] simplexTable, String[] basis){
+    public String checkAnswer(SimlexMethod simlexMethod,  String[][] simplexTable, String[] basis){
         String[] startBasis = simlexMethod.getStartBasis();
         for (int i = 0; i < simplexTable[0].length - 1; i++){
             if(simplexTable[simplexTable.length - 1][i].charAt(0) == '-'){

@@ -19,6 +19,7 @@ public class InputControll {
     private GridPane gridFunction;
     private String isNormalDrob = "/";
     private int method = 1;
+    private int steps = 0;
     FractionalNumber fractionalNumber = new FractionalNumber();
     SimlexMethod simlexMethod = new SimlexMethod();
 
@@ -188,6 +189,51 @@ public class InputControll {
         return newGridPane;
     }
 
+    public String poShagam(int step, int index){
+        if(step == 0)
+            simlexMethod = new SimlexMethod();
+            String[][] limit = getTable();
+            String[] func = getFunction();
+            if(minOrMax.equals("max")) {
+                for(int i = 0; i < func.length; i++){
+                    func[i] = replacingTheSign(func[i]);
+                }
+            }
+            for(int i = 0; i < limit.length; i++){
+                for (int j = 0; j < limit[0].length; j++){
+                    if(!checkInput(limit[i][j]))
+                        return "Введено не число";
+                }
+            }
+            for (int i = 0; i < func.length; i++){
+                if(!checkInput(func[i]))
+                    return "Введено не число";
+            }
+            for(int i = 0; i < limit.length; i++){
+                if(limit[i][limit[0].length - 1].charAt(0) == '-'){
+                    for (int j = 0; j < limit[0].length; j++)
+                        limit[i][j] = replacingTheSign(limit[i][j]);
+                }
+            }
+        String[][] s;
+        CalculateSimlex calculateSimlex = new CalculateSimlex(simlexMethod, func, limit);
+        ArtificialBasisMethod artificialBasisMethod = new ArtificialBasisMethod(true, func, limit, calculateSimlex);
+        if(step == 0)
+            calculateSimlex.calculateSimplexTablePoShagam(limit, calculateSimlex.calcualteDownFunction(limit));
+        else{
+            s = calculateSimlex.helpCalculateSimplexTablePoShagam(simlexMethod.getSimplexTable(), index);
+            if(!simlexMethod.getMinElInfo().equals("no")){
+                if(!artificialBasisMethod.checkAnswer(simlexMethod,s, simlexMethod.getBasis()).equals("Ok")){
+                    return artificialBasisMethod.checkAnswer(simlexMethod, s, simlexMethod.getBasis());
+                }
+                else {
+                    calculateSimlex.helpCalculateSimplexTablePoShagam(artificialBasisMethod.newSimplexTable(simlexMethod.getSimplexTable()), index);
+                }
+            }
+        }
+        return "0k";
+    }
+
     public String iskBasis(){
         simlexMethod = new SimlexMethod();
         String[][] limit = getTable();
@@ -215,7 +261,7 @@ public class InputControll {
         }
         CalculateSimlex calculateSimlex = new CalculateSimlex(simlexMethod, func, limit);
         simlexMethod.setDownFunction(calculateSimlex.calcualteDownFunction(getTable()));
-        ArtificialBasisMethod artificialBasisMethod = new ArtificialBasisMethod(function, getTable(), calculateSimlex);
+        ArtificialBasisMethod artificialBasisMethod = new ArtificialBasisMethod(false, function, getTable(), calculateSimlex);
 
         System.out.println(calculateSimlex.getSimlexMethod().getAnswer());
         return calculateSimlex.getSimlexMethod().getAnswer();
@@ -252,8 +298,8 @@ public class InputControll {
 
         CalculateSimlex calculateSimlex = new CalculateSimlex(simlexMethod, func, limit);
         simlexMethod.setDownFunction(calculateSimlex.calcualteDownFunction(getTable()));
-        ArtificialBasisMethod artificialBasisMethod = new ArtificialBasisMethod(function, getTable(), calculateSimlex);
-        if(!artificialBasisMethod.checkAnswer(simlexMethod.getSimplexTable(), simlexMethod.getBasis()).equals("Ok")){
+        ArtificialBasisMethod artificialBasisMethod = new ArtificialBasisMethod(false, function, getTable(), calculateSimlex);
+        if(!artificialBasisMethod.checkAnswer(simlexMethod, simlexMethod.getSimplexTable(), simlexMethod.getBasis()).equals("Ok")){
             return "Система несовместна или имеет бесконечно много решений";
         }
         simlexMethod = new SimlexMethod();
@@ -346,11 +392,31 @@ public class InputControll {
         this.function = function;
     }
 
+    public int getSteps() {
+        return steps;
+    }
+
+    public void setSteps(int steps) {
+        this.steps = steps;
+    }
+
     public int getMethod() {
         return method;
     }
 
     public void setMethod(int method) {
         this.method = method;
+    }
+
+    public void addSteps() {
+        steps++;
+    }
+
+    public SimlexMethod getSimlexMethod() {
+        return simlexMethod;
+    }
+
+    public void setSimlexMethod(SimlexMethod simlexMethod) {
+        this.simlexMethod = simlexMethod;
     }
 }
