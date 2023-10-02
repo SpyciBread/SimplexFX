@@ -250,25 +250,21 @@ public class HelloApplication extends Application {
                     else{
                         calculateButton.setDisable(true);
                         String tmpAnswer = inputControll.poShagam(step, indexOfRefEl);
-                        vBox.getChildren().add(inputControll.tableAnswer(row,col));
+                        //vBox.getChildren().add(inputControll.tableAnswer(row,col));
 
-                        if(!tmpAnswer.equals("Введено не число")){
-                            vBox.getChildren().add(inputControll.tableAnswer(row,col));
-                            inputControll.addSteps();
-                        }
-                        else
-                            poShagamButton.setDisable(true);
                         if(tmpAnswer.equals("Ok")){
                             vBox.getChildren().add(inputControll.tableAnswer(row,col));
-                            vBox.getChildren().add(new Label(tmpAnswer));
+                            //vBox.getChildren().add(new Label(tmpAnswer));
                             inputControll.addSteps();
                         }
                         else {
-                            if (!tmpAnswer.equals("Calculated")) {
+                            if (!tmpAnswer.equals("kk")) {
                                 calculateButton.setDisable(true);
-                                vBox.getChildren().add(new Label(tmpAnswer));
+                                //vBox.getChildren().add(new Label(tmpAnswer));
                                 vBox.getChildren().add(inputControll.tableAnswer(row, col));
+                                inputControll.addSteps();
                             } else {
+                                vBox.getChildren().add(new Label(tmpAnswer));
                                 inputControll.addSteps();
                             }
                         }

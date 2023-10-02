@@ -125,7 +125,6 @@ public class ArtificialBasisMethod {
     }
 
     private String replacingTheSign(String replacingNumber){
-
         if(replacingNumber.charAt(0) == '-'){
             replacingNumber = replacingNumber.substring(1);
         }

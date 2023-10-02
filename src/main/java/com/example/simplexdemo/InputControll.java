@@ -217,21 +217,20 @@ public class InputControll {
             }
         String[][] s;
         CalculateSimlex calculateSimlex = new CalculateSimlex(simlexMethod, func, limit);
-        ArtificialBasisMethod artificialBasisMethod = new ArtificialBasisMethod(true, func, limit, calculateSimlex);
+        //ArtificialBasisMethod artificialBasisMethod = new ArtificialBasisMethod(true, func, limit, calculateSimlex);
         if(step == 0)
             calculateSimlex.calculateSimplexTablePoShagam(limit, calculateSimlex.calcualteDownFunction(limit));
         else{
-            s = calculateSimlex.helpCalculateSimplexTablePoShagam(simlexMethod.getSimplexTable(), index);
             if(!simlexMethod.getMinElInfo().equals("no")){
-                if(!artificialBasisMethod.checkAnswer(simlexMethod,s, simlexMethod.getBasis()).equals("Ok")){
-                    return artificialBasisMethod.checkAnswer(simlexMethod, s, simlexMethod.getBasis());
-                }
-                else {
-                    calculateSimlex.helpCalculateSimplexTablePoShagam(artificialBasisMethod.newSimplexTable(simlexMethod.getSimplexTable()), index);
+                if(calculateSimlex.checkAnswerPoShagam(simlexMethod, simlexMethod.getSimplexTable(), simlexMethod.getBasis()).equals("Ok")){
+                    return "kk";
                 }
             }
+            else {
+                calculateSimlex.helpCalculateSimplexTablePoShagam(simlexMethod.getSimplexTable(),index);
+            }
         }
-        return "0k";
+        return "Ok";
     }
 
     public String iskBasis(){

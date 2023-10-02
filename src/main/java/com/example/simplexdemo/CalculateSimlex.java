@@ -115,6 +115,95 @@ public class CalculateSimlex {
         simlexMethod.setStartBasis(startBasis);
         simlexMethod.setNotBasis(notBasis);
     }
+    private String replacingTheSignPoShagam(String replacingNumber){
+        if(replacingNumber.charAt(0) == '-'){
+            replacingNumber = replacingNumber.substring(1);
+        }
+        else
+        {
+            if(replacingNumber.charAt(0) != '0')
+                replacingNumber = "-" + replacingNumber;
+        }
+        return replacingNumber;
+    }
+
+    public String checkAnswerPoShagam(SimlexMethod simlexMethod,  String[][] simplexTable, String[] basis){
+        String[] startBasis = simlexMethod.getStartBasis();
+        for (int i = 0; i < simplexTable[0].length - 1; i++){
+            if(simplexTable[simplexTable.length - 1][i].charAt(0) == '-'){
+                simlexMethod.setAnswer("Функция неограничена");
+                return "Функция неограничена";
+            }
+        }
+        for (int i = 0; i < simlexMethod.getStartBasis().length; i++)
+            for(int j = 0; j < simlexMethod.getStartBasis().length; j++)
+                if(basis[i].equals(startBasis[j])){
+                    simlexMethod.setAnswer("Система несовместна");
+                    return "Система несовместна";
+                }
+        simlexMethod.setSimplexTable(simplexTable);
+        return "Ok";
+    }
+
+    public String[][] newSimplexTablePoSagam(String[][] simplexTable){
+        int col = 0;
+        for(int i = 0; i < simplexTable[0].length; i++){
+            if(simplexTable[simplexTable.length - 1][i].equals("0")){
+                col++;
+            }
+        }
+        String[] notBasis = simlexMethod.getNotBasis();
+        String[] newNotBasis = new String[col - 1];
+        String[] Basis = simlexMethod.getBasis();
+        String[] function = simlexMethod.getFunction();
+        int j = 0;
+        String[][] newSimplexTable = new String[simplexTable.length][col];
+        for(int i = 0; i < simplexTable[0].length; i++){
+            if(simplexTable[simplexTable.length - 1][i].equals("0")){
+                for(int k = 0; k < simplexTable.length; k++)
+                    System.arraycopy(simplexTable[k], i, newSimplexTable[k], j, 1);
+                j++;
+            }
+        }
+        j = 0;
+        for(int i = 0; i < simplexTable[0].length - 1; i++){
+            if(simplexTable[simplexTable.length - 1][i].equals("0")){
+                newNotBasis[j] = notBasis[i];
+                j++;
+            }
+        }
+
+        String[] downF = newSimplexTable[newSimplexTable.length - 1];
+        for(int i = 0; i < newSimplexTable.length - 1; i++){
+            for(int k = 0; k < newSimplexTable[0].length; k++){
+                int indexX = Integer.parseInt(Basis[i].substring(1))-1;
+                String tmpNumber;
+                if(k != newSimplexTable[0].length - 1)
+                    tmpNumber = operationWithTwoNumbers(replacingTheSignPoShagam(newSimplexTable[i][k]), function[indexX], "*");
+                else
+                    tmpNumber = operationWithTwoNumbers(newSimplexTable[i][k], function[indexX], "*");
+                downF[k] = operationWithTwoNumbers(downF[k], tmpNumber, "+");
+            }
+        }
+
+        for(int i = 0; i < newNotBasis.length; i++){
+            int indexX = Integer.parseInt(newNotBasis[i].substring(1))-1;
+            downF[i] = operationWithTwoNumbers(downF[i], function[indexX], "+");
+        }
+        simlexMethod.setNotBasis(newNotBasis);
+        downF[downF.length -1] = replacingTheSignPoShagam(downF[downF.length -1]);
+        newSimplexTable = Arrays.copyOfRange(newSimplexTable, 0, newSimplexTable.length - 1);
+        simlexMethod.setDownFunction(downF);
+        for (int i = 0; i < newSimplexTable.length; i++) {
+            System.out.println(Arrays.toString(newSimplexTable[i]));
+        }
+        System.out.println(Arrays.toString(downF));
+        System.out.println((Arrays.toString(simlexMethod.getBasis())));
+        System.out.println(Arrays.toString(simlexMethod.getNotBasis()));
+        simlexMethod.setLimitations(newSimplexTable);
+
+        return newSimplexTable;
+    }
 
     public void calculateSimplexTablePoShagam(String[][] limit, String[] downFunction){
         int numRows = limit.length;
