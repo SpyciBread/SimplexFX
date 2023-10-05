@@ -154,6 +154,10 @@ public class HelloApplication extends Application {
                 clickedGridPane = (GridPane) vBox.getChildren().get(6 + inputControll.getSteps());
                 int endIndex = clickedGridPane.getChildren().size();
                 int startIndex = endIndex - inputControll.getSimlexMethod().getSimplexTable()[0].length;
+                if(inputControll.preCheck().equals("ready")){
+                    vBox.getChildren().add(inputControll.tableAnswer(inputControll.getSimlexMethod().getSimplexTable().length - 1, inputControll.getSimlexMethod().getSimplexTable()[0].length));
+                    inputControll.addSteps();
+                }
                 for (Node node : clickedGridPane.getChildren()) {
                     if (node instanceof TextField) {
                         if(clickedGridPane.getChildren().indexOf(node) < (endIndex - 1) && clickedGridPane.getChildren().indexOf(node) >= startIndex){

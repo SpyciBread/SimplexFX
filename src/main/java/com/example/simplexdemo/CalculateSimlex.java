@@ -201,7 +201,14 @@ public class CalculateSimlex {
         System.out.println((Arrays.toString(simlexMethod.getBasis())));
         System.out.println(Arrays.toString(simlexMethod.getNotBasis()));
         simlexMethod.setLimitations(newSimplexTable);
-
+        String[][] newSimplexTableAnswer = new String[newSimplexTable.length+1][newSimplexTable[0].length];
+        for (int i = 0; i < newSimplexTable.length; i++) {
+            for (int k = 0; k < newSimplexTable[i].length; k++) {
+                newSimplexTableAnswer[i][k] = newSimplexTable[i][k]; // копируем элементы исходного массива в новый массив
+            }
+        }
+        newSimplexTableAnswer[newSimplexTable.length] = downF;
+        simlexMethod.setSimplexTable(newSimplexTableAnswer);
         return newSimplexTable;
     }
 
@@ -233,7 +240,6 @@ public class CalculateSimlex {
 
     public String[][] helpCalculateSimplexTablePoShagam(String[][] simlexTable, int indexOfMinEl){
         String minEl = findMinEl(Arrays.copyOfRange(simlexTable[simlexTable.length - 1], 0, simlexTable[0].length - 1));
-
         if(minEl.equals("Calculated")){
             simlexMethod.setMinElInfo("Calculated");
             simlexMethod.setSimplexTable(simlexTable);

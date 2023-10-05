@@ -9,8 +9,5 @@
         <module name="SimplexDemo" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="SimplexDemo" target="11" />
-    </bytecodeTargetLevel>
   </component>
 </project>

@@ -189,6 +189,19 @@ public class InputControll {
         return newGridPane;
     }
 
+    public String preCheck(){
+        if(steps != 0){
+            String[][] limit = getTable();
+            String[] func = getFunction();
+            CalculateSimlex calculateSimlex = new CalculateSimlex(simlexMethod, func, limit);
+            if(calculateSimlex.checkAnswerPoShagam(simlexMethod, simlexMethod.getSimplexTable(), simlexMethod.getBasis()).equals("Ok")){
+                calculateSimlex.newSimplexTablePoSagam(simlexMethod.getSimplexTable());
+                return "ready";
+            }
+        }
+        return "not";
+    }
+
     public String poShagam(int step, int index){
         if(step == 0)
             simlexMethod = new SimlexMethod();
