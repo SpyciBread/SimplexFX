@@ -14,14 +14,6 @@ public class ArtificialBasisMethod {
         this.calculateSimlex = calculateSimlex;
         fractionalNumber = new FractionalNumber();
         simlexMethod = calculateSimlex.getSimlexMethod();
-        Map<Integer, String[][]> stepTable = new HashMap<>();
-        Map<Integer, String[]> basisStep = new HashMap<>();
-        Map<Integer, String[]> notBasisStep = new HashMap<>();
-
-        simlexMethod.setIterationForStep(0);
-        simlexMethod.setBasisSteps(basisStep);
-        simlexMethod.setNotBasisSteps(notBasisStep);
-        simlexMethod.setTableSteps(stepTable);
         this.steps = steps;
         getSimplexTable(function, limit);
     }

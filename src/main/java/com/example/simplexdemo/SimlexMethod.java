@@ -23,9 +23,9 @@ public class SimlexMethod {
     private int quantityLimit;
     private int negativeElementIndex;
     private int iterationForStep;
-    private Map<Integer,String[][]> tableSteps;
-    private Map<Integer,String[]> basisSteps;
-    private Map<Integer,String[]> notBasisSteps;
+    private HashMap<Integer,String[][]> tableSteps;
+    private HashMap<Integer,String[]> basisSteps;
+    private HashMap<Integer,String[]> notBasisSteps;
 
     public void putBasisSteps(int step, String[] basisSteps) {
         this.basisSteps.put(step,basisSteps);
@@ -33,27 +33,27 @@ public class SimlexMethod {
     public void putNotBasisSteps(int step, String[] notBasisSteps) {
         this.notBasisSteps.put(step,notBasisSteps);
     }
-    public Map<Integer, String[]> getBasisSteps() {
+    public HashMap<Integer, String[]> getBasisSteps() {
         return basisSteps;
     }
 
-    public void setBasisSteps(Map<Integer, String[]> basisSteps) {
+    public void setBasisSteps(HashMap<Integer, String[]> basisSteps) {
         this.basisSteps = basisSteps;
     }
 
-    public Map<Integer, String[]> getNotBasisSteps() {
+    public HashMap<Integer, String[]> getNotBasisSteps() {
         return notBasisSteps;
     }
 
-    public void setNotBasisSteps(Map<Integer, String[]> notBasisSteps) {
+    public void setNotBasisSteps(HashMap<Integer, String[]> notBasisSteps) {
         this.notBasisSteps = notBasisSteps;
     }
 
-    public Map<Integer, String[][]> getTableSteps() {
+    public HashMap<Integer, String[][]> getTableSteps() {
         return tableSteps;
     }
 
-    public void setTableSteps(Map<Integer, String[][]> tableSteps) {
+    public void setTableSteps(HashMap<Integer, String[][]> tableSteps) {
         this.tableSteps = tableSteps;
     }
 

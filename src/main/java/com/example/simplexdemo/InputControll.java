@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class InputControll {
     private String[][] table;
@@ -20,6 +22,7 @@ public class InputControll {
     private String isNormalDrob = "/";
     private int method = 1;
     private int steps = 0;
+    private int okCount = 0;
     FractionalNumber fractionalNumber = new FractionalNumber();
     SimlexMethod simlexMethod = new SimlexMethod();
 
@@ -194,9 +197,20 @@ public class InputControll {
             String[][] limit = getTable();
             String[] func = getFunction();
             CalculateSimlex calculateSimlex = new CalculateSimlex(simlexMethod, func, limit);
-            if(calculateSimlex.checkAnswerPoShagam(simlexMethod, simlexMethod.getSimplexTable(), simlexMethod.getBasis()).equals("Ok")){
-                calculateSimlex.newSimplexTablePoSagam(simlexMethod.getSimplexTable());
+            String answer = calculateSimlex.checkAnswerPoShagam(simlexMethod, simlexMethod.getSimplexTable(), simlexMethod.getBasis());
+            if(answer.equals("Ok")){
+                if(okCount == 0)
+                    calculateSimlex.newSimplexTablePoSagam(simlexMethod.getSimplexTable());
+                else
+                    return "Calculate";
+                okCount++;
                 return "ready";
+            }
+            if(answer.equals("Функция неограничена") && simlexMethod.getMinElInfo().equals("Функция неограничена")){
+                return "bad";
+            }
+            if(answer.equals("Система несовместна")){
+                return "bad";
             }
         }
         return "not";
@@ -231,8 +245,16 @@ public class InputControll {
         String[][] s;
         CalculateSimlex calculateSimlex = new CalculateSimlex(simlexMethod, func, limit);
         //ArtificialBasisMethod artificialBasisMethod = new ArtificialBasisMethod(true, func, limit, calculateSimlex);
-        if(step == 0)
+        if(step == 0){
+            HashMap<Integer, String[][]> stepTable = new HashMap<>();
+            HashMap<Integer, String[]> basisStep = new HashMap<>();
+            HashMap<Integer, String[]> notBasisStep = new HashMap<>();
+            simlexMethod.setIterationForStep(0);
+            simlexMethod.setBasisSteps(basisStep);
+            simlexMethod.setNotBasisSteps(notBasisStep);
+            simlexMethod.setTableSteps(stepTable);
             calculateSimlex.calculateSimplexTablePoShagam(limit, calculateSimlex.calcualteDownFunction(limit));
+        }
         else{
             if(!simlexMethod.getMinElInfo().equals("no")){
                 if(calculateSimlex.checkAnswerPoShagam(simlexMethod, simlexMethod.getSimplexTable(), simlexMethod.getBasis()).equals("Ok")){
@@ -243,6 +265,10 @@ public class InputControll {
                 calculateSimlex.helpCalculateSimplexTablePoShagam(simlexMethod.getSimplexTable(),index);
             }
         }
+        simlexMethod.putBasisSteps(step, simlexMethod.getBasis());
+        simlexMethod.putNotBasisSteps(step, simlexMethod.getNotBasis());
+        simlexMethod.putTableSteps(step, simlexMethod.getSimplexTable());
+        simlexMethod.addIterationForStep();
         return "Ok";
     }
 
@@ -410,6 +436,9 @@ public class InputControll {
 
     public void setSteps(int steps) {
         this.steps = steps;
+    }
+    public void decSteps() {
+        this.steps--;
     }
 
     public int getMethod() {

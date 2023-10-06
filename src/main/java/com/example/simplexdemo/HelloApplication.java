@@ -26,6 +26,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.Callable;
 
@@ -113,9 +115,10 @@ public class HelloApplication extends Application {
         Button iskusstButton = new Button("Искусственный базис");
         iskusstButton.setStyle("-fx-background-color: green;");
         Button poShagamButton = new Button("По шагам");
+        Button stepBack = new Button("Шаг назад");
         Button pickElButton = new Button("Выбрать опорный элемент");
         openButton.setDisable(true);
-        hBoxVibor.getChildren().addAll(simplexButton,iskusstButton,poShagamButton,pickElButton);
+        hBoxVibor.getChildren().addAll(simplexButton,iskusstButton,poShagamButton, stepBack ,pickElButton);
         vBox.getChildren().add(hBoxVibor);
         vBox.getChildren().add(hBox);
         vBox.getChildren().add(createButton);
@@ -134,6 +137,17 @@ public class HelloApplication extends Application {
             }
         });
 
+        stepBack.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if(inputControll.getSteps() > 1){
+                    int endIndex = vBox.getChildren().size();
+                    vBox.getChildren().remove(6 + inputControll.getSteps(), endIndex);
+                    inputControll.decSteps();
+                }
+            }
+        });
+
         EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
@@ -141,7 +155,7 @@ public class HelloApplication extends Application {
                 int endIndex = clickedGridPane.getChildren().size();
                 int startIndex = endIndex - inputControll.getSimlexMethod().getSimplexTable()[0].length;
 
-                int needIndex = (clickedGridPane.getChildren().indexOf(e.getSource()) - startIndex) % (col);
+                int needIndex = (clickedGridPane.getChildren().indexOf(e.getSource()) - startIndex) % (columnsComboBox.getValue());
                 indexOfRefEl = needIndex;
                 System.out.println(indexOfRefEl);
                 calculateButton.setDisable(false);
@@ -157,6 +171,18 @@ public class HelloApplication extends Application {
                 if(inputControll.preCheck().equals("ready")){
                     vBox.getChildren().add(inputControll.tableAnswer(inputControll.getSimlexMethod().getSimplexTable().length - 1, inputControll.getSimlexMethod().getSimplexTable()[0].length));
                     inputControll.addSteps();
+                }
+                if(inputControll.preCheck().equals("bad")){
+                    Label badAnswer = new Label(inputControll.getSimlexMethod().getAnswer());
+                    vBox.getChildren().add(badAnswer);
+                    inputControll.addSteps();
+                    pickElButton.setDisable(true);
+                }
+                if(inputControll.preCheck().equals("Calculate")){
+                    Label badAnswer = new Label(inputControll.getSimlexMethod().getAnswer());
+                    vBox.getChildren().add(badAnswer);
+                    inputControll.addSteps();
+                    pickElButton.setDisable(true);
                 }
                 for (Node node : clickedGridPane.getChildren()) {
                     if (node instanceof TextField) {

@@ -430,24 +430,31 @@ public class CalculateSimlex {
     public String findMinEl(String[] list){
         List<String> negativeEl = new ArrayList<>();
         List<Integer> negativeElIndex = new ArrayList<>();
-        boolean isWrongEl = false;
         int kolvoMinEl = 0;
         String minNegativEl;
         for (int i = 0; i < list.length; i++) {
             if (list[i].charAt(0) == '-'){
                 kolvoMinEl++;
-                for(int j: simlexMethod.getNegativeElements())
-                    if(i == j){
-                        isWrongEl = true;
-                        break;
-                    }
-                if(!isWrongEl){
-                    negativeEl.add(list[i]);
-                    negativeElIndex.add(i);
-                }
+                negativeEl.add(list[i]);
+                negativeElIndex.add(i);
+
             }
         }
-        if(simlexMethod.getNegativeElements().size() == kolvoMinEl && kolvoMinEl > 0){
+        String[][] simplexTable = simlexMethod.getSimplexTable();
+        int negativElinCol = 0;
+        for(int i = 0; i < simlexMethod.getSimplexTable()[0].length - 1; i++)
+            if(simplexTable[simlexMethod.getSimplexTable().length - 1][i].charAt(0) == '-')
+                for (int j = 0; j < simlexMethod.getSimplexTable().length - 1; j++)
+                {
+                    if(simplexTable[j][i].charAt(0) == '-' || simplexTable[j][i].charAt(0) == '0')
+                        negativElinCol++;
+                    else{
+                        negativElinCol = 0;
+                        break;
+                    }
+                }
+
+        if(negativElinCol == simplexTable.length - 1){
             simlexMethod.setMinElInfo("Функция неограничена");
             return "Функция неограничена";
         }
