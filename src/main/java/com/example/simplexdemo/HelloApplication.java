@@ -35,6 +35,7 @@ public class HelloApplication extends Application {
     InputControll inputControll = new InputControll();
     GridPane clickedGridPane;
     int indexOfRefEl;
+    int afterNewTableCount = -1;
     @Override
     public void start(Stage primaryStage) {
         VBox vBox = new VBox();
@@ -100,12 +101,14 @@ public class HelloApplication extends Application {
 
         Label rowsLabel = new Label("Количество строк:");
         Label columnsLabel = new Label("Количество столбцов:");
+        Label labelBasis = new Label("Базис");
 
         hBox.getChildren().add(rowsLabel);
         hBox.getChildren().add(rowsComboBox);
         hBox.getChildren().add(columnsLabel);
         hBox.getChildren().add(columnsComboBox);
         hBox.getChildren().add(numbersComboBox);
+        hBox.getChildren().add(labelBasis);
 
         Button calculateButton = new Button("Решить");
         Button createButton = new Button("Создать");
@@ -116,7 +119,9 @@ public class HelloApplication extends Application {
         iskusstButton.setStyle("-fx-background-color: green;");
         Button poShagamButton = new Button("По шагам");
         Button stepBack = new Button("Шаг назад");
+        stepBack.setDisable(true);
         Button pickElButton = new Button("Выбрать опорный элемент");
+        pickElButton.setDisable(true);
         openButton.setDisable(true);
         hBoxVibor.getChildren().addAll(simplexButton,iskusstButton,poShagamButton, stepBack ,pickElButton);
         vBox.getChildren().add(hBoxVibor);
@@ -134,6 +139,12 @@ public class HelloApplication extends Application {
                 simplexButton.setStyle("-fx-background-color: green;");
                 iskusstButton.setStyle("");
                 poShagamButton.setStyle("");
+                for(int i = 0; i < columnsComboBox.getValue() - 1; i++){
+                    ComboBox<Integer> pickedBasis = new ComboBox<>();
+                    pickedBasis.getItems().addAll(0,1);
+                    pickedBasis.setValue(0);
+                    hBox.getChildren().add(pickedBasis);
+                }
             }
         });
 
@@ -141,9 +152,33 @@ public class HelloApplication extends Application {
             @Override
             public void handle(ActionEvent event) {
                 if(inputControll.getSteps() > 1){
+                    calculateButton.setDisable(true);
+                    pickElButton.setDisable(false);
                     int endIndex = vBox.getChildren().size();
                     vBox.getChildren().remove(6 + inputControll.getSteps(), endIndex);
                     inputControll.decSteps();
+                    inputControll.simlexMethod.decIterationForStep();
+
+//                    inputControll.simlexMethod.removeTableSteps(inputControll.getSteps());
+//                    inputControll.simlexMethod.removeBasisSteps(inputControll.getSteps());
+//                    inputControll.simlexMethod.removeNotBasisSteps(inputControll.getSteps());
+                    String[][] table = new String[inputControll.simlexMethod.getTableSteps(inputControll.getSteps() - 1).length][];
+                    for (int i = 0; i < inputControll.simlexMethod.getTableSteps(inputControll.getSteps() - 1).length; i++) {
+                        table[i] = Arrays.copyOf(inputControll.simlexMethod.getTableSteps(inputControll.getSteps() - 1)[i],
+                                inputControll.simlexMethod.getTableSteps(inputControll.getSteps() - 1)[i].length);
+                    }
+
+                    String[] basis = Arrays.copyOf(inputControll.simlexMethod.getBasisSteps(inputControll.getSteps() - 1), inputControll.simlexMethod.getBasisSteps(inputControll.getSteps() - 1).length);
+                    String[] notBasis = Arrays.copyOf(inputControll.simlexMethod.getNotBasisSteps(inputControll.getSteps() - 1),inputControll.simlexMethod.getNotBasisSteps(inputControll.getSteps() - 1).length);
+
+                    inputControll.simlexMethod.setSimplexTable(table);
+                    inputControll.simlexMethod.setBasis(basis);
+                    inputControll.simlexMethod.setNotBasis(notBasis);
+                    if(afterNewTableCount > -1){
+                        afterNewTableCount--;
+                    }
+                    if(afterNewTableCount == -1)
+                        inputControll.setOkCount(0);
                 }
             }
         });
@@ -156,6 +191,19 @@ public class HelloApplication extends Application {
                 int startIndex = endIndex - inputControll.getSimlexMethod().getSimplexTable()[0].length;
 
                 int needIndex = (clickedGridPane.getChildren().indexOf(e.getSource()) - startIndex) % (columnsComboBox.getValue());
+                TextField textField = (TextField) e.getSource();
+                clickedGridPane = (GridPane) vBox.getChildren().get(6 + inputControll.getSteps());
+                for (Node node : clickedGridPane.getChildren()) {
+                    if (node instanceof TextField) {
+                        if(clickedGridPane.getChildren().indexOf(node) < (endIndex - 1) && clickedGridPane.getChildren().indexOf(node) >= startIndex){
+                            TextField textField2 = (TextField) node;
+                            if(textField2.getText().charAt(0) == '-'){
+                                textField2.setStyle("-fx-background-color: yellow;");
+                            }
+                        }
+                    }
+                }
+                textField.setStyle("-fx-background-color: green");
                 indexOfRefEl = needIndex;
                 System.out.println(indexOfRefEl);
                 calculateButton.setDisable(false);
@@ -165,32 +213,35 @@ public class HelloApplication extends Application {
         pickElButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                //calculateButton.setDisable(false);
                 clickedGridPane = (GridPane) vBox.getChildren().get(6 + inputControll.getSteps());
                 int endIndex = clickedGridPane.getChildren().size();
                 int startIndex = endIndex - inputControll.getSimlexMethod().getSimplexTable()[0].length;
                 if(inputControll.preCheck().equals("ready")){
                     vBox.getChildren().add(inputControll.tableAnswer(inputControll.getSimlexMethod().getSimplexTable().length - 1, inputControll.getSimlexMethod().getSimplexTable()[0].length));
                     inputControll.addSteps();
+                    afterNewTableCount = 0;
                 }
                 if(inputControll.preCheck().equals("bad")){
                     Label badAnswer = new Label(inputControll.getSimlexMethod().getAnswer());
                     vBox.getChildren().add(badAnswer);
-                    inputControll.addSteps();
+                    //inputControll.addSteps();
                     pickElButton.setDisable(true);
                 }
                 if(inputControll.preCheck().equals("Calculate")){
                     Label badAnswer = new Label(inputControll.getSimlexMethod().getAnswer());
                     vBox.getChildren().add(badAnswer);
-                    inputControll.addSteps();
+                    //inputControll.addSteps();
                     pickElButton.setDisable(true);
                 }
+                //inputControll.addSteps();
                 for (Node node : clickedGridPane.getChildren()) {
                     if (node instanceof TextField) {
                         if(clickedGridPane.getChildren().indexOf(node) < (endIndex - 1) && clickedGridPane.getChildren().indexOf(node) >= startIndex){
                             TextField textField = (TextField) node;
                             if(textField.getText().charAt(0) == '-'){
                                 textField.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandler);
-                                textField.setStyle("-fx-background-color: green;");
+                                textField.setStyle("-fx-background-color: yellow;");
                             }
                         }
                     }
@@ -211,16 +262,37 @@ public class HelloApplication extends Application {
         poShagamButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                inputControll.setMethod(3);
-                poShagamButton.setStyle("-fx-background-color: green;");
-                iskusstButton.setStyle("");
-                simplexButton.setStyle("");
+                inputControll.setIsSteps(!inputControll.isSteps());
+                if(inputControll.isSteps()){
+                    poShagamButton.setStyle("-fx-background-color: green;");
+                    pickElButton.setDisable(false);
+                    stepBack.setDisable(false);
+                }
+                else{
+                    poShagamButton.setStyle("");
+                    pickElButton.setDisable(true);
+                    stepBack.setDisable(true);
+                }
+
             }
         });
 
         createButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                if(inputControll.getMethod() == 2){
+                    while (hBox.getChildren().size() > 6){
+                        hBox.getChildren().remove(hBox.getChildren().size() - 1);
+                    }
+                    for(int i = 0; i < columnsComboBox.getValue() - 1; i++){
+                        ComboBox<Integer> pickedBasis = new ComboBox<>();
+                        pickedBasis.getItems().addAll(0,1);
+                        pickedBasis.setValue(0);
+                        hBox.getChildren().add(pickedBasis);
+                    }
+                }
+                afterNewTableCount = -1;
+                inputControll.setOkCount(0);
                 inputControll.setSteps(0);
                 int row = rowsComboBox.getValue();
                 int col = columnsComboBox.getValue();
@@ -237,7 +309,7 @@ public class HelloApplication extends Application {
             @Override
             public void handle(ActionEvent event) {
                 // Создаем новую таблицу
-                if(inputControll.getMethod() != 3){
+                if(!inputControll.isSteps()){
                     int row = rowsComboBox.getValue();
                     int col = columnsComboBox.getValue();
                     String drob = numbersComboBox.getValue();
@@ -248,56 +320,85 @@ public class HelloApplication extends Application {
                     }
                     if(inputControll.getMethod() == 2){
                         inputControll.getArray((GridPane)vBox.getChildren().get(6), (GridPane)vBox.getChildren().get(5), row, col, drob);
-                        answer = new Label(inputControll.gauss());
+                        int[] pickbasis = new int[columnsComboBox.getValue() - 1];
+                        for(int i = 0; i < hBox.getChildren().size() - 6; i++){
+                            ComboBox<Integer> textFieldBasis = (ComboBox<Integer>) hBox.getChildren().get(i + 6);
+                            pickbasis[i]  = textFieldBasis.getValue();
+                        }
+                        answer = new Label(inputControll.gauss(pickbasis));
                     }
                     int endIndex = vBox.getChildren().size() - 1;
                     vBox.getChildren().remove(6, endIndex);
                     vBox.getChildren().add(answer);
-                    if(!answer.getText().equals("Введено не число"))
+                    if(!answer.getText().equals("Введено не число") || !answer.getText().equals("Неверно введен базис"))
                         vBox.getChildren().add(inputControll.tableAnswer(row,col));
+                    else
+                    {
+                        calculateButton.setDisable(true);
+                        openButton.setDisable(true);
+                        return;
+                    }
                     calculateButton.setDisable(true);
                     openButton.setDisable(true);
                 }
                 else {
-                    int step = inputControll.getSteps();
-                    int row = rowsComboBox.getValue();
-                    int col = columnsComboBox.getValue();
-                    String drob = numbersComboBox.getValue();
+                    if(inputControll.getMethod() == 1){
+                        int step = inputControll.getSteps();
+                        int row = rowsComboBox.getValue();
+                        int col = columnsComboBox.getValue();
+                        String drob = numbersComboBox.getValue();
 
-                    if(step == 0){
-                        inputControll.getArray((GridPane)vBox.getChildren().get(6), (GridPane)vBox.getChildren().get(5), row, col, drob);
-                        if(!inputControll.poShagam(0,0).equals("Введено не число")){
-                            vBox.getChildren().add(inputControll.tableAnswer(row,col));
-                            inputControll.addSteps();
-                            calculateButton.setDisable(true);
-                            indexOfRefEl = -1;
-                        }
-                        else{
-                            vBox.getChildren().add(new Label("Введено не число"));
-                            calculateButton.setDisable(true);
-                        }
-                    }
-                    else{
-                        calculateButton.setDisable(true);
-                        String tmpAnswer = inputControll.poShagam(step, indexOfRefEl);
-                        //vBox.getChildren().add(inputControll.tableAnswer(row,col));
-
-                        if(tmpAnswer.equals("Ok")){
-                            vBox.getChildren().add(inputControll.tableAnswer(row,col));
-                            //vBox.getChildren().add(new Label(tmpAnswer));
-                            inputControll.addSteps();
-                        }
-                        else {
-                            if (!tmpAnswer.equals("kk")) {
+                        if(step == 0){
+                            inputControll.getArray((GridPane)vBox.getChildren().get(6), (GridPane)vBox.getChildren().get(5), row, col, drob);
+                            if(!inputControll.poShagam(0,0).equals("Введено не число")){
+                                vBox.getChildren().add(inputControll.tableAnswer(row,col));
+                                inputControll.addSteps();
                                 calculateButton.setDisable(true);
-                                //vBox.getChildren().add(new Label(tmpAnswer));
-                                vBox.getChildren().add(inputControll.tableAnswer(row, col));
-                                inputControll.addSteps();
-                            } else {
-                                vBox.getChildren().add(new Label(tmpAnswer));
-                                inputControll.addSteps();
+                                indexOfRefEl = -1;
+                            }
+                            else{
+                                vBox.getChildren().add(new Label("Введено не число"));
+                                calculateButton.setDisable(true);
                             }
                         }
+                        else{
+                            clickedGridPane = (GridPane) vBox.getChildren().get(6 + inputControll.getSteps());
+                            int endIndex = clickedGridPane.getChildren().size();
+                            int startIndex = endIndex - inputControll.getSimlexMethod().getSimplexTable()[0].length;
+                            for (Node node : clickedGridPane.getChildren()) {
+                                if (node instanceof TextField) {
+                                    if(clickedGridPane.getChildren().indexOf(node) < (endIndex - 1) && clickedGridPane.getChildren().indexOf(node) >= startIndex){
+                                        TextField textField = (TextField) node;
+                                        if(textField.getText().charAt(0) == '-'){
+                                            textField.removeEventHandler(MouseEvent.MOUSE_CLICKED, eventHandler);
+                                        }
+                                    }
+                                }
+                            }
+                            calculateButton.setDisable(true);
+                            String tmpAnswer = inputControll.poShagam(step, indexOfRefEl);
+                            if(afterNewTableCount > -1)
+                            {
+                                afterNewTableCount++;
+                            }
+                            if(tmpAnswer.equals("Ok")){
+                                vBox.getChildren().add(inputControll.tableAnswer(row,col));
+                                inputControll.addSteps();
+                            }
+                            else {
+                                if (!tmpAnswer.equals("kk")) {
+                                    calculateButton.setDisable(true);
+                                    vBox.getChildren().add(inputControll.tableAnswer(row, col));
+                                    inputControll.addSteps();
+                                } else {
+                                    vBox.getChildren().add(new Label(tmpAnswer));
+                                    inputControll.addSteps();
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        //гаус по шагам
                     }
                 }
             }

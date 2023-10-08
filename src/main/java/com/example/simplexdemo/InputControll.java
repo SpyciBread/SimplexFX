@@ -21,6 +21,7 @@ public class InputControll {
     private GridPane gridFunction;
     private String isNormalDrob = "/";
     private int method = 1;
+    private boolean isSteps;
     private int steps = 0;
     private int okCount = 0;
     FractionalNumber fractionalNumber = new FractionalNumber();
@@ -199,8 +200,11 @@ public class InputControll {
             CalculateSimlex calculateSimlex = new CalculateSimlex(simlexMethod, func, limit);
             String answer = calculateSimlex.checkAnswerPoShagam(simlexMethod, simlexMethod.getSimplexTable(), simlexMethod.getBasis());
             if(answer.equals("Ok")){
-                if(okCount == 0)
+                if(okCount == 0){
                     calculateSimlex.newSimplexTablePoSagam(simlexMethod.getSimplexTable());
+                    putSteps(steps);
+                }
+
                 else
                     return "Calculate";
                 okCount++;
@@ -265,11 +269,24 @@ public class InputControll {
                 calculateSimlex.helpCalculateSimplexTablePoShagam(simlexMethod.getSimplexTable(),index);
             }
         }
-        simlexMethod.putBasisSteps(step, simlexMethod.getBasis());
-        simlexMethod.putNotBasisSteps(step, simlexMethod.getNotBasis());
-        simlexMethod.putTableSteps(step, simlexMethod.getSimplexTable());
-        simlexMethod.addIterationForStep();
+        putSteps(step);
         return "Ok";
+    }
+
+    private void putSteps(int step){
+        String[][] table = new String[simlexMethod.getSimplexTable().length][];
+        for (int i = 0; i < simlexMethod.getSimplexTable().length; i++) {
+            table[i] = Arrays.copyOf(simlexMethod.getSimplexTable()[i], simlexMethod.getSimplexTable()[i].length);
+        }
+
+        String[] basis = Arrays.copyOf(simlexMethod.getBasis(), simlexMethod.getBasis().length);
+        String[] notBasis = Arrays.copyOf( simlexMethod.getNotBasis(), simlexMethod.getNotBasis().length);
+
+
+        simlexMethod.putBasisSteps(step, basis);
+        simlexMethod.putNotBasisSteps(step, notBasis);
+        simlexMethod.putTableSteps(step, table);
+        simlexMethod.addIterationForStep();
     }
 
     public String iskBasis(){
@@ -305,11 +322,31 @@ public class InputControll {
         return calculateSimlex.getSimlexMethod().getAnswer();
     }
 
-    public String gauss(){
+    public String gauss(int[] basis){
         simlexMethod = new SimlexMethod();
         String[][] limit = getTable();
         String[] func = getFunction();
-        int[] basis = {0,1,1};
+        int rang = 0;
+        for (int i = 0; i < limit[0].length - 1; i++){
+            if(basis[i] == 1)
+                rang++;
+        }
+        if(rang < limit.length){
+            for (int i = 0; i < limit[0].length - 1; i++){
+                if(rang == limit.length)
+                    break;
+                else
+                {
+                    if(basis[i] != 1){
+                        basis[i] = 1;
+                        rang++;
+                    }
+                }
+            }
+        }
+        if(rang > limit.length){
+            return "Неверно введен базис";
+        }
         if(minOrMax.equals("max")) {
             for(int i = 0; i < func.length; i++){
                 func[i] = replacingTheSign(func[i]);
@@ -406,6 +443,10 @@ public class InputControll {
         return replacingNumber;
     }
 
+    public void setOkCount(int okCount) {
+        this.okCount = okCount;
+    }
+
     public String[][] getTable() {
         return table;
     }
@@ -459,5 +500,13 @@ public class InputControll {
 
     public void setSimlexMethod(SimlexMethod simlexMethod) {
         this.simlexMethod = simlexMethod;
+    }
+
+    public boolean isSteps() {
+        return isSteps;
+    }
+
+    public void setIsSteps(boolean steps) {
+        isSteps = steps;
     }
 }

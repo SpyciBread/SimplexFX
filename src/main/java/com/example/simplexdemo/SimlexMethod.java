@@ -1,9 +1,6 @@
 package com.example.simplexdemo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SimlexMethod {
     private FractionalNumber fractionalNumber = new FractionalNumber();
@@ -33,24 +30,36 @@ public class SimlexMethod {
     public void putNotBasisSteps(int step, String[] notBasisSteps) {
         this.notBasisSteps.put(step,notBasisSteps);
     }
-    public HashMap<Integer, String[]> getBasisSteps() {
-        return basisSteps;
+
+    public String[] getBasisSteps(int step) {
+        return basisSteps.get(step);
     }
 
     public void setBasisSteps(HashMap<Integer, String[]> basisSteps) {
         this.basisSteps = basisSteps;
     }
 
-    public HashMap<Integer, String[]> getNotBasisSteps() {
-        return notBasisSteps;
+    public String[] getNotBasisSteps(int step) {
+        return notBasisSteps.get(step);
     }
 
     public void setNotBasisSteps(HashMap<Integer, String[]> notBasisSteps) {
         this.notBasisSteps = notBasisSteps;
     }
 
-    public HashMap<Integer, String[][]> getTableSteps() {
-        return tableSteps;
+    public String[][] getTableSteps(int step) {
+        return tableSteps.get(step);
+    }
+
+    public void removeTableSteps(int step) {
+        tableSteps.remove(step);
+    }
+
+    public void removeNotBasisSteps(int step) {
+        notBasisSteps.remove(step);
+    }
+    public void removeBasisSteps(int step) {
+        basisSteps.remove(step);
     }
 
     public void setTableSteps(HashMap<Integer, String[][]> tableSteps) {
@@ -58,6 +67,10 @@ public class SimlexMethod {
     }
 
     public void putTableSteps(int step, String[][] tableSteps) {
+//        String[][] table = new String[tableSteps.length][];
+//        for (int i = 0; i < tableSteps.length; i++) {
+//            table[i] = Arrays.copyOf(tableSteps[i], tableSteps[i].length);
+//        }
         this.tableSteps.put(step,tableSteps);
     }
 
@@ -196,5 +209,8 @@ public class SimlexMethod {
 
     public void addIterationForStep() {
         this.iterationForStep++;
+    }
+    public void decIterationForStep() {
+        this.iterationForStep--;
     }
 }
