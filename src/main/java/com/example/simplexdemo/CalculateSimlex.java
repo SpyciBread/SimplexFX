@@ -127,7 +127,7 @@ public class CalculateSimlex {
         return replacingNumber;
     }
 
-    public String checkAnswerPoShagam(SimlexMethod simlexMethod,  String[][] simplexTable, String[] basis){
+    public String checkAnswerPoShagam(SimlexMethod simlexMethod,  String[][] simplexTable, String[] basis, boolean isGauss){
         String[] startBasis = simlexMethod.getStartBasis();
         for (int i = 0; i < simplexTable[0].length - 1; i++){
             if(simplexTable[simplexTable.length - 1][i].charAt(0) == '-'){
@@ -135,15 +135,18 @@ public class CalculateSimlex {
                 return "Функция неограничена";
             }
         }
-        for (int i = 0; i < simlexMethod.getStartBasis().length; i++)
-            for(int j = 0; j < simlexMethod.getStartBasis().length; j++)
-                if(basis[i].equals(startBasis[j])){
-                    simlexMethod.setAnswer("Система несовместна");
-                    return "Система несовместна";
-                }
+        if(!isGauss)
+            for (int i = 0; i < simlexMethod.getStartBasis().length; i++)
+                for(int j = 0; j < simlexMethod.getStartBasis().length; j++)
+                    if(basis[i].equals(startBasis[j])){
+                        simlexMethod.setAnswer("Система несовместна");
+                        return "Система несовместна";
+                    }
         simlexMethod.setSimplexTable(simplexTable);
         return "Ok";
     }
+
+
 
     public String[][] newSimplexTablePoSagam(String[][] simplexTable){
         int col = 0;
@@ -237,6 +240,8 @@ public class CalculateSimlex {
         simlexTable[numRows] = downFunction;
         simlexMethod.setSimplexTable(simlexTable);
     }
+
+
 
     public String[][] helpCalculateSimplexTablePoShagam(String[][] simlexTable, int indexOfMinEl){
         String minEl = findMinEl(Arrays.copyOfRange(simlexTable[simlexTable.length - 1], 0, simlexTable[0].length - 1));

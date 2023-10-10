@@ -5,13 +5,14 @@ import java.util.Arrays;
 public class Gauss {
     FractionalNumber fractionalNumber = new FractionalNumber();
     private String[][] matrix;
+    private boolean isSteps;
     private int[] basis;
     private int[] startBasis;
     private String[] function;
     private int size;
     private SimlexMethod simlexMethod;
     private CalculateSimlex calculateSimlex;
-    public Gauss(String[][] matrix, int[] basis, CalculateSimlex calculateSimlex, String[] function){
+    public Gauss(String[][] matrix, int[] basis, CalculateSimlex calculateSimlex, String[] function, boolean isSteps){
         this.matrix = matrix;
         this.basis = basis;
         this.startBasis = new int[basis.length];
@@ -19,6 +20,7 @@ public class Gauss {
         this.calculateSimlex = calculateSimlex;
         this.simlexMethod = calculateSimlex.getSimlexMethod();
         this.function = function;
+        this.isSteps = isSteps;
         calculateGauss(this.matrix, this.basis);
     }
 
@@ -164,10 +166,105 @@ public class Gauss {
         for (int i = 0; i < matrix.length; i++) {
             System.out.println(Arrays.toString(matrix[i]));
         }
-        String[][] simplexTable = newSimplexTable(matrix);
+        simlexMethod.setGaussTable(matrix);
+        if(checkSystem(matrix).equals("Система несовместна")){
+            simlexMethod.setAnswer("Система несовместна");
+            return;
+        }
+        String[][] simplexTable;
+        if(!isSteps)
+            simplexTable = newSimplexTable(matrix);
 //        for (int i = 0; i < simplexTable.length; i++) {
 //            System.out.println(Arrays.toString(simplexTable[i]));
 //        }
+    }
+
+    public String checkSystem(String[][] matrix){
+        boolean onlyZeros = true;
+        int count = 0;
+        for (int i = 0; i <  matrix.length; i++) {
+            for (int j = 0; j <  matrix[i].length; j++) {
+                if (!matrix[i][j].equals("0")) {
+                    onlyZeros = false;
+                    count++;
+                }
+            }
+            if(count == 1 || onlyZeros){
+                return "Система несовместна";
+            }
+            else {
+                onlyZeros = true;
+                count = 0;
+            }
+        }
+        return "ok";
+    }
+
+    public void newSimplexTablePoShagam(String[][] simplexTable){
+        int indexBasis = 0;
+        for(int i : startBasis){
+            if(i == 1)
+                indexBasis++;
+        }
+        int[] basis = Arrays.copyOfRange(startBasis,0,startBasis.length);
+        for(int i = 0; i < simplexTable.length; i++){
+            for (int j = 0; j < simplexTable[0].length - 1; j++)
+                if(basis[j] == 1){
+                    if(simplexTable[i][j].equals("0")){
+                        String[] tmp = simplexTable[i];
+                        simplexTable[i] = simplexTable[i+1];
+                        simplexTable[i+1] = tmp;
+                        basis[j] = 0;
+                        break;
+                    }
+                    else{
+                        basis[j] = 0;
+                        break;
+                    }
+                }
+        }
+        String[][] newSimplexTable = new String[simplexTable.length + 1][simplexTable[0].length - indexBasis];
+        for(int i = 0; i < newSimplexTable.length - 1; i++){
+            int k = 0;
+            for (int j = 0; j < simplexTable[0].length - 1; j++){
+                if(startBasis[j] != 1){
+                    newSimplexTable[i][k] = simplexTable[i][j];
+                    k++;
+                }
+                newSimplexTable[i][k] = simplexTable[i][simplexTable[0].length - 1];
+            }
+        }
+        String[] downF = new String[newSimplexTable[0].length];
+        for(int i = 0; i < downF.length; i++)
+            downF[i] = "0";
+        for(int i = 0; i < newSimplexTable.length - 1; i++){
+            for(int k = 0; k < newSimplexTable[0].length ; k++){
+                int indexX = Integer.parseInt(simlexMethod.getBasis()[i].substring(1))-1;
+                String tmpNumber;
+                if(k != newSimplexTable[0].length - 1)
+                    tmpNumber = operationWithTwoNumbers(replacingTheSign(newSimplexTable[i][k]), function[indexX], "*");
+                else
+                    tmpNumber = operationWithTwoNumbers(newSimplexTable[i][k], function[indexX], "*");
+                downF[k] = operationWithTwoNumbers(downF[k], tmpNumber, "+");
+            }
+        }
+
+        for(int i = 0; i < simlexMethod.getNotBasis().length; i++){
+            int indexX = Integer.parseInt(simlexMethod.getNotBasis()[i].substring(1))-1;
+            downF[i] = operationWithTwoNumbers(downF[i], function[indexX], "+");
+        }
+        for (int i = 0; i < newSimplexTable.length; i++) {
+            System.out.println(Arrays.toString(newSimplexTable[i]));
+        }
+        downF[downF.length -1] = replacingTheSign(downF[downF.length -1]);
+        newSimplexTable = Arrays.copyOfRange(newSimplexTable, 0, newSimplexTable.length - 1);
+//        downFunction = downF;
+
+        for (int i = 0; i < newSimplexTable.length; i++) {
+            System.out.println(Arrays.toString(newSimplexTable[i]));
+        }
+        System.out.println(Arrays.toString(downF));
+        calculateSimlex.calculateSimplexTablePoShagam(newSimplexTable,downF);
     }
 
     public String[][] newSimplexTable(String[][] simplexTable){

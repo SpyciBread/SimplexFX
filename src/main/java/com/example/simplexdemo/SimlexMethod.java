@@ -5,6 +5,7 @@ import java.util.*;
 public class SimlexMethod {
     private FractionalNumber fractionalNumber = new FractionalNumber();
     private String[][] limitations;
+    private String[][] gaussTable;
     private String[] notBasis;
     private String[] basis;
     private String[] firstBasis;
@@ -23,6 +24,14 @@ public class SimlexMethod {
     private HashMap<Integer,String[][]> tableSteps;
     private HashMap<Integer,String[]> basisSteps;
     private HashMap<Integer,String[]> notBasisSteps;
+
+    public String[][] getGaussTable() {
+        return gaussTable;
+    }
+
+    public void setGaussTable(String[][] gaussTable) {
+        this.gaussTable = gaussTable;
+    }
 
     public void putBasisSteps(int step, String[] basisSteps) {
         this.basisSteps.put(step,basisSteps);

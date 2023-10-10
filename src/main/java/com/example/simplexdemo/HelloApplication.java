@@ -151,7 +151,12 @@ public class HelloApplication extends Application {
         stepBack.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if(inputControll.getSteps() > 1){
+                int needStep;
+                if(inputControll.getIsGauss())
+                    needStep = 2;
+                else
+                    needStep = 1;
+                if(inputControll.getSteps() > needStep){
                     calculateButton.setDisable(true);
                     pickElButton.setDisable(false);
                     int endIndex = vBox.getChildren().size();
@@ -310,6 +315,7 @@ public class HelloApplication extends Application {
             public void handle(ActionEvent event) {
                 // Создаем новую таблицу
                 if(!inputControll.isSteps()){
+                    inputControll.setGauss(false);
                     int row = rowsComboBox.getValue();
                     int col = columnsComboBox.getValue();
                     String drob = numbersComboBox.getValue();
@@ -343,6 +349,7 @@ public class HelloApplication extends Application {
                 }
                 else {
                     if(inputControll.getMethod() == 1){
+                        inputControll.setGauss(false);
                         int step = inputControll.getSteps();
                         int row = rowsComboBox.getValue();
                         int col = columnsComboBox.getValue();
@@ -398,6 +405,65 @@ public class HelloApplication extends Application {
                         }
                     }
                     else {
+                        inputControll.setGauss(true);
+                        if(inputControll.getSteps() == 0)
+                            inputControll.setSteps(1);
+                        int step = inputControll.getSteps();
+                        int row = rowsComboBox.getValue();
+                        int col = columnsComboBox.getValue();
+                        String drob = numbersComboBox.getValue();
+                        if(step == 1){
+                            inputControll.getArray((GridPane)vBox.getChildren().get(6), (GridPane)vBox.getChildren().get(5), row, col, drob);
+                            int[] pickbasis = new int[columnsComboBox.getValue() - 1];
+                            for(int i = 0; i < hBox.getChildren().size() - 6; i++){
+                                ComboBox<Integer> textFieldBasis = (ComboBox<Integer>) hBox.getChildren().get(i + 6);
+                                pickbasis[i]  = textFieldBasis.getValue();
+                            }
+
+                            inputControll.gaussPoshagam(pickbasis);
+                            vBox.getChildren().add(inputControll.tableAnswerGauss());
+                            if(inputControll.getSimlexMethod().getAnswer()!=null)
+                                if(inputControll.getSimlexMethod().getAnswer().equals("Система несовместна")){
+                                    Label badAnswer = new Label(inputControll.getSimlexMethod().getAnswer());
+                                    vBox.getChildren().add(badAnswer);
+                                    calculateButton.setDisable(true);
+                                    pickElButton.setDisable(true);
+                                    return;
+                                }
+                        }
+
+
+                        //vBox.getChildren().add(inputControll.tableAnswer(row,col));
+
+                        clickedGridPane = (GridPane) vBox.getChildren().get(6 + inputControll.getSteps());
+                        int endIndex = clickedGridPane.getChildren().size();
+                        int startIndex = endIndex - inputControll.getSimlexMethod().getSimplexTable()[0].length;
+                        for (Node node : clickedGridPane.getChildren()) {
+                            if (node instanceof TextField) {
+                                if(clickedGridPane.getChildren().indexOf(node) < (endIndex - 1) && clickedGridPane.getChildren().indexOf(node) >= startIndex){
+                                    TextField textField = (TextField) node;
+                                    if(textField.getText().charAt(0) == '-'){
+                                        textField.removeEventHandler(MouseEvent.MOUSE_CLICKED, eventHandler);
+                                    }
+                                }
+                            }
+                        }
+                        calculateButton.setDisable(true);
+                        String tmpAnswer = inputControll.poShagam(step, indexOfRefEl);
+                        if(tmpAnswer.equals("Ok")){
+                            vBox.getChildren().add(inputControll.tableAnswer(row,col));
+                            inputControll.addSteps();
+                        }
+                        else {
+                            if (!tmpAnswer.equals("kk")) {
+                                calculateButton.setDisable(true);
+                                vBox.getChildren().add(inputControll.tableAnswer(row, col));
+                                inputControll.addSteps();
+                            } else {
+                                vBox.getChildren().add(new Label(tmpAnswer));
+                                inputControll.addSteps();
+                            }
+                        }
                         //гаус по шагам
                     }
                 }

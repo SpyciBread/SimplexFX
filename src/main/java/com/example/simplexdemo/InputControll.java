@@ -22,6 +22,7 @@ public class InputControll {
     private String isNormalDrob = "/";
     private int method = 1;
     private boolean isSteps;
+    private boolean isGauss;
     private int steps = 0;
     private int okCount = 0;
     FractionalNumber fractionalNumber = new FractionalNumber();
@@ -198,13 +199,16 @@ public class InputControll {
             String[][] limit = getTable();
             String[] func = getFunction();
             CalculateSimlex calculateSimlex = new CalculateSimlex(simlexMethod, func, limit);
-            String answer = calculateSimlex.checkAnswerPoShagam(simlexMethod, simlexMethod.getSimplexTable(), simlexMethod.getBasis());
+            String answer = calculateSimlex.checkAnswerPoShagam(simlexMethod, simlexMethod.getSimplexTable(), simlexMethod.getBasis(), getIsGauss());
             if(answer.equals("Ok")){
-                if(okCount == 0){
-                    calculateSimlex.newSimplexTablePoSagam(simlexMethod.getSimplexTable());
-                    putSteps(steps);
+                if(!getIsGauss()){
+                    if(okCount == 0){
+                        calculateSimlex.newSimplexTablePoSagam(simlexMethod.getSimplexTable());
+                        putSteps(steps);
+                    }
+                    else
+                        return "Calculate";
                 }
-
                 else
                     return "Calculate";
                 okCount++;
@@ -249,28 +253,55 @@ public class InputControll {
         String[][] s;
         CalculateSimlex calculateSimlex = new CalculateSimlex(simlexMethod, func, limit);
         //ArtificialBasisMethod artificialBasisMethod = new ArtificialBasisMethod(true, func, limit, calculateSimlex);
-        if(step == 0){
-            HashMap<Integer, String[][]> stepTable = new HashMap<>();
-            HashMap<Integer, String[]> basisStep = new HashMap<>();
-            HashMap<Integer, String[]> notBasisStep = new HashMap<>();
-            simlexMethod.setIterationForStep(0);
-            simlexMethod.setBasisSteps(basisStep);
-            simlexMethod.setNotBasisSteps(notBasisStep);
-            simlexMethod.setTableSteps(stepTable);
-            calculateSimlex.calculateSimplexTablePoShagam(limit, calculateSimlex.calcualteDownFunction(limit));
-        }
-        else{
-            if(!simlexMethod.getMinElInfo().equals("no")){
-                if(calculateSimlex.checkAnswerPoShagam(simlexMethod, simlexMethod.getSimplexTable(), simlexMethod.getBasis()).equals("Ok")){
-                    return "kk";
+        if(!getIsGauss()){
+            if(step == 0){
+                HashMap<Integer, String[][]> stepTable = new HashMap<>();
+                HashMap<Integer, String[]> basisStep = new HashMap<>();
+                HashMap<Integer, String[]> notBasisStep = new HashMap<>();
+                simlexMethod.setIterationForStep(0);
+                simlexMethod.setBasisSteps(basisStep);
+                simlexMethod.setNotBasisSteps(notBasisStep);
+                simlexMethod.setTableSteps(stepTable);
+                calculateSimlex.calculateSimplexTablePoShagam(limit, calculateSimlex.calcualteDownFunction(limit));
+            }
+            else{
+                if(!simlexMethod.getMinElInfo().equals("no")){
+                    if(calculateSimlex.checkAnswerPoShagam(simlexMethod, simlexMethod.getSimplexTable(), simlexMethod.getBasis(), getIsGauss()).equals("Ok")){
+                        return "kk";
+                    }
+                }
+                else {
+                    calculateSimlex.helpCalculateSimplexTablePoShagam(simlexMethod.getSimplexTable(),index);
                 }
             }
-            else {
-                calculateSimlex.helpCalculateSimplexTablePoShagam(simlexMethod.getSimplexTable(),index);
-            }
+            putSteps(step);
+            return "Ok";
         }
-        putSteps(step);
-        return "Ok";
+        else {
+            if(step == 1){
+                HashMap<Integer, String[][]> stepTable = new HashMap<>();
+                HashMap<Integer, String[]> basisStep = new HashMap<>();
+                HashMap<Integer, String[]> notBasisStep = new HashMap<>();
+                simlexMethod.setIterationForStep(1);
+                simlexMethod.setBasisSteps(basisStep);
+                simlexMethod.setNotBasisSteps(notBasisStep);
+                simlexMethod.setTableSteps(stepTable);
+                //calculateSimlex.calculateSimplexTablePoShagam(limit, calculateSimlex.calcualteDownFunction(limit));
+                calculateSimlex.getAnswer(simlexMethod.getSimplexTable(), simlexMethod.getBasis(), simlexMethod.getNotBasis());
+            }
+            //else{
+                if(!simlexMethod.getMinElInfo().equals("no")){
+                    if(calculateSimlex.checkAnswerPoShagam(simlexMethod, simlexMethod.getSimplexTable(), simlexMethod.getBasis(), getIsGauss()).equals("Ok")){
+                        return "kk";
+                    }
+                }
+                else {
+                    calculateSimlex.helpCalculateSimplexTablePoShagam(simlexMethod.getSimplexTable(),index);
+                }
+            //}
+            putSteps(step);
+            return "Ok";
+        }
     }
 
     private void putSteps(int step){
@@ -320,6 +351,99 @@ public class InputControll {
 
         System.out.println(calculateSimlex.getSimlexMethod().getAnswer());
         return calculateSimlex.getSimlexMethod().getAnswer();
+    }
+
+    public GridPane tableAnswerGauss(){
+        GridPane newGridPane = new GridPane();
+        String[][] answerTable = simlexMethod.getGaussTable();
+
+        if(isNormalDrob.equals(".")){
+            for (int i = 0; i < answerTable.length; i++) {
+                //downFunction[i] = fractionalNumber.toDesDrob(downFunction[i]);
+                for (int j = 0; j < answerTable[0].length; j++) {
+                    answerTable[i][j] = fractionalNumber.toDesDrob(answerTable[i][j]);
+                }
+
+            }
+        }
+
+        // Создаем ячейки с данными
+        for (int i = 0; i < answerTable.length; i++) {
+            for (int j = 0; j < answerTable[0].length; j++) {
+                TextField dataTextField = new TextField(answerTable[i][j]);
+                dataTextField.setEditable(false);
+                newGridPane.add(dataTextField, j + 1, i + 1);
+            }
+        }
+
+        return newGridPane;
+    }
+
+    public String gaussPoshagam(int[] basis){
+        simlexMethod = new SimlexMethod();
+        String[][] limit = getTable();
+        String[] func = getFunction();
+        int rang = 0;
+        for (int i = 0; i < limit[0].length - 1; i++){
+            if(basis[i] == 1)
+                rang++;
+        }
+        if(rang < limit.length){
+            for (int i = 0; i < limit[0].length - 1; i++){
+                if(rang == limit.length)
+                    break;
+                else
+                {
+                    if(basis[i] != 1){
+                        basis[i] = 1;
+                        rang++;
+                    }
+                }
+            }
+        }
+        if(rang > limit.length){
+            return "Неверно введен базис";
+        }
+        if(minOrMax.equals("max")) {
+            for(int i = 0; i < func.length; i++){
+                func[i] = replacingTheSign(func[i]);
+            }
+        }
+        for(int i = 0; i < limit.length; i++){
+            for (int j = 0; j < limit[0].length; j++){
+                if(!checkInput(limit[i][j]))
+                    return "Введено не число";
+            }
+        }
+        for (int i = 0; i < func.length; i++){
+            if(!checkInput(func[i]))
+                return "Введено не число";
+        }
+        for(int i = 0; i < limit.length; i++){
+            if(limit[i][limit[0].length - 1].charAt(0) == '-'){
+                for (int j = 0; j < limit[0].length; j++)
+                    limit[i][j] = replacingTheSign(limit[i][j]);
+            }
+        }
+        CalculateSimlex calculateSimlex = new CalculateSimlex(simlexMethod, func, limit);
+        simlexMethod.setDownFunction(calculateSimlex.calcualteDownFunction(getTable()));
+        //ArtificialBasisMethod artificialBasisMethod = new ArtificialBasisMethod(false, function, getTable(), calculateSimlex);
+//        if(!artificialBasisMethod.checkAnswer(simlexMethod, simlexMethod.getSimplexTable(), simlexMethod.getBasis()).equals("Ok")){
+//            return "Система несовместна или имеет бесконечно много решений";
+//        }
+        simlexMethod = new SimlexMethod();
+        CalculateSimlex calculateSimlex2 = new CalculateSimlex(simlexMethod, func, limit);
+        Gauss gauss = new Gauss(limit, basis, calculateSimlex2, func, true);
+        if(gauss.getSimlexMethod().getAnswer() != null){
+            if(!gauss.getSimlexMethod().getAnswer().equals("Система несовместна")){
+                return gauss.getSimlexMethod().getAnswer();
+            }
+            else
+                gauss.newSimplexTablePoShagam(simlexMethod.getGaussTable());
+        }
+        else
+            gauss.newSimplexTablePoShagam(simlexMethod.getGaussTable());
+        return gauss.getSimlexMethod().getAnswer();
     }
 
     public String gauss(int[] basis){
@@ -379,7 +503,7 @@ public class InputControll {
         }
         simlexMethod = new SimlexMethod();
         CalculateSimlex calculateSimlex2 = new CalculateSimlex(simlexMethod, func, limit);
-        Gauss gauss = new Gauss(limit, basis, calculateSimlex2, func);
+        Gauss gauss = new Gauss(limit, basis, calculateSimlex2, func, false);
         return gauss.getSimlexMethod().getAnswer();
     }
 
@@ -508,5 +632,13 @@ public class InputControll {
 
     public void setIsSteps(boolean steps) {
         isSteps = steps;
+    }
+
+    public boolean getIsGauss() {
+        return isGauss;
+    }
+
+    public void setGauss(boolean gauss) {
+        isGauss = gauss;
     }
 }
