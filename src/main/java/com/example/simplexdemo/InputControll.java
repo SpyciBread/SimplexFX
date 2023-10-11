@@ -295,8 +295,9 @@ public class InputControll {
                         return "kk";
                     }
                 }
-                else {
-                    calculateSimlex.helpCalculateSimplexTablePoShagam(simlexMethod.getSimplexTable(),index);
+                else {//тут проблема
+                    if(step != 1)
+                        calculateSimlex.helpCalculateSimplexTablePoShagam(simlexMethod.getSimplexTable(),index);
                 }
             //}
             putSteps(step);

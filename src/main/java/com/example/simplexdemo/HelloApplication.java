@@ -135,16 +135,17 @@ public class HelloApplication extends Application {
         simplexButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                if(inputControll.getMethod() != 2)
+                    for(int i = 0; i < columnsComboBox.getValue() - 1; i++){
+                        ComboBox<Integer> pickedBasis = new ComboBox<>();
+                        pickedBasis.getItems().addAll(0,1);
+                        pickedBasis.setValue(0);
+                        hBox.getChildren().add(pickedBasis);
+                    }
                 inputControll.setMethod(2);
                 simplexButton.setStyle("-fx-background-color: green;");
                 iskusstButton.setStyle("");
                 poShagamButton.setStyle("");
-                for(int i = 0; i < columnsComboBox.getValue() - 1; i++){
-                    ComboBox<Integer> pickedBasis = new ComboBox<>();
-                    pickedBasis.getItems().addAll(0,1);
-                    pickedBasis.setValue(0);
-                    hBox.getChildren().add(pickedBasis);
-                }
             }
         });
 
@@ -261,6 +262,7 @@ public class HelloApplication extends Application {
                 iskusstButton.setStyle("-fx-background-color: green;");
                 poShagamButton.setStyle("");
                 simplexButton.setStyle("");
+                hBox.getChildren().remove(6, hBox.getChildren().size());
             }
         });
 
@@ -307,6 +309,8 @@ public class HelloApplication extends Application {
                 vBox.getChildren().add(6, inputControll.createTable(row, col));
                 calculateButton.setDisable(false);
                 openButton.setDisable(false);
+                pickElButton.setDisable(true);
+                stepBack.setDisable(true);
             }
         });
 

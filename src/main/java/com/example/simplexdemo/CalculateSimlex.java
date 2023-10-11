@@ -229,14 +229,14 @@ public class CalculateSimlex {
             }
         }
 
-        for (int i = 0; i < numRows; i++){
-            if(simlexTable[i][numCols - 1].charAt(0) == '-'){
-                for (int j = 0; j < numRows; j++){
-                    simlexTable[i][j] = operationWithTwoNumbers("-1", simlexTable[i][j], "*");
-                }
-            }
-
-        }
+//        for (int i = 0; i < numRows; i++){
+//            if(simlexTable[i][numCols - 1].charAt(0) == '-'){
+//                for (int j = 0; j < numRows; j++){
+//                    simlexTable[i][j] = operationWithTwoNumbers("-1", simlexTable[i][j], "*");
+//                }
+//            }
+//
+//        }
         simlexTable[numRows] = downFunction;
         simlexMethod.setSimplexTable(simlexTable);
     }
