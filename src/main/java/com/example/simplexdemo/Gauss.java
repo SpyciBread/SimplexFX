@@ -171,6 +171,34 @@ public class Gauss {
             simlexMethod.setAnswer("Система несовместна");
             return;
         }
+        boolean isRebase = false;
+        for (int i = 0; i < matrix.length ; i++){
+            if(matrix[i][matrix[0].length - 1].charAt(0) == '-'){
+                int k = 0;
+                for(int j = 0; j < startBasis.length; j++){
+                    if(startBasis[j] == 1 && k == i){
+                        for(int l = 0; l < startBasis.length; l++){
+                            if(startBasis[l] == 0){
+                                startBasis[l] = 1;
+                                isRebase = true;
+                                startBasis[j] = 0;
+                                break;
+                            }
+                        }
+
+                    }
+                    if(isRebase){
+                        break;
+                    }
+                    if(startBasis[j] == 1 && k != i)
+                        k++;
+                }
+            }
+            if(isRebase){
+                basis = Arrays.copyOf(startBasis, startBasis.length);
+                calculateGauss(matrix,basis);
+            }
+        }
         String[][] simplexTable;
         if(!isSteps)
             simplexTable = newSimplexTable(matrix);

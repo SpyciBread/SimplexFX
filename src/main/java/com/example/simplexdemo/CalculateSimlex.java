@@ -229,9 +229,9 @@ public class CalculateSimlex {
             }
         }
 
-//        for (int i = 0; i < numRows; i++){
+//        for (int i = 0; i < numRows ; i++){
 //            if(simlexTable[i][numCols - 1].charAt(0) == '-'){
-//                for (int j = 0; j < numRows; j++){
+//                for (int j = 0; j < numRows + 1; j++){
 //                    simlexTable[i][j] = operationWithTwoNumbers("-1", simlexTable[i][j], "*");
 //                }
 //            }
@@ -347,7 +347,7 @@ public class CalculateSimlex {
 
 
         for(int i = 0; i < numRows - 1; i++) {
-            if(!simlexTable[i][indexOfMinEl].equals("0")){
+            if(!simlexTable[i][indexOfMinEl].equals("0") && simlexTable[i][indexOfMinEl].charAt(0) != '-'){
                 String el = operationWithTwoNumbers(simlexTable[i][simlexTable[0].length - 1], simlexTable[i][indexOfMinEl], "/");
                 if(referenceEl.equals(el)){
                     System.out.println(simlexTable[i][indexOfMinEl]);
@@ -511,9 +511,9 @@ public class CalculateSimlex {
                 c = c * (simlexMethod.getFractionalNumber().findLCM(b,d) / d);
 
                 maxNegativNumber = Math.min(a,c);
-                if(maxNegativNumber == a)
-                    simlexMethod.setNegativeElementIndex(negativeElIndex.get(i-1));
-                else
+                if(maxNegativNumber != a)
+//                    simlexMethod.setNegativeElementIndex(negativeElIndex.get(i-2));
+//                else
                     simlexMethod.setNegativeElementIndex(negativeElIndex.get(i));
             }
         }
