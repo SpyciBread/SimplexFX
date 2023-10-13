@@ -129,6 +129,7 @@ public class CalculateSimlex {
 
     public String checkAnswerPoShagam(SimlexMethod simlexMethod,  String[][] simplexTable, String[] basis, boolean isGauss){
         String[] startBasis = simlexMethod.getStartBasis();
+        getAnswer(simplexTable,basis,simlexMethod.getNotBasis());
         for (int i = 0; i < simplexTable[0].length - 1; i++){
             if(simplexTable[simplexTable.length - 1][i].charAt(0) == '-'){
                 simlexMethod.setAnswer("Функция неограничена");

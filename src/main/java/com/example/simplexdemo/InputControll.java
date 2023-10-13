@@ -229,6 +229,7 @@ public class InputControll {
             simlexMethod = new SimlexMethod();
             String[][] limit = getTable();
             String[] func = getFunction();
+        if(step == 0)
             if(minOrMax.equals("max")) {
                 for(int i = 0; i < func.length; i++){
                     func[i] = replacingTheSign(func[i]);
@@ -296,7 +297,7 @@ public class InputControll {
                     }
                 }
                 else {//тут проблема
-                    if(step != 1)
+                    //if(step != 1)
                         calculateSimlex.helpCalculateSimplexTablePoShagam(simlexMethod.getSimplexTable(),index);
                 }
             //}
@@ -436,7 +437,7 @@ public class InputControll {
         CalculateSimlex calculateSimlex2 = new CalculateSimlex(simlexMethod, func, limit);
         Gauss gauss = new Gauss(limit, basis, calculateSimlex2, func, true);
         if(gauss.getSimlexMethod().getAnswer() != null){
-            if(!gauss.getSimlexMethod().getAnswer().equals("Система несовместна")){
+            if(gauss.getSimlexMethod().getAnswer().equals("Система несовместна")){
                 return gauss.getSimlexMethod().getAnswer();
             }
             else
