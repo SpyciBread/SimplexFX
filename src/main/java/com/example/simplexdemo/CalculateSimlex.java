@@ -428,8 +428,13 @@ public class CalculateSimlex {
                 else
                     answer[i] = "0";
         }
-        String finalAnswer = Arrays.toString(answer) + " f(x) = " +
-                Arrays.toString(replacingTheSign(new String[]{simlexTable[simlexTable.length - 1][simlexTable[0].length - 1]}));
+        String znachFunc;
+        if(simlexMethod.getMinStatus().equals("max"))
+            znachFunc = Arrays.toString(new String[]{simlexTable[simlexTable.length - 1][simlexTable[0].length - 1]});
+        else
+            znachFunc = Arrays.toString(replacingTheSign(new String[]{simlexTable[simlexTable.length - 1][simlexTable[0].length - 1]}));
+
+        String finalAnswer = Arrays.toString(answer) + " f(x) = " + znachFunc;
         simlexMethod.setAnswer(finalAnswer);
         return finalAnswer;
     }

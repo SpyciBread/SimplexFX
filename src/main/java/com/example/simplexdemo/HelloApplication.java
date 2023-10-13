@@ -1,20 +1,13 @@
 package com.example.simplexdemo;
 
 import javafx.application.Application;
-import javafx.beans.Observable;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
+
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.input.MouseButton;
+
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -24,18 +17,18 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
+
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+
 import java.util.Scanner;
-import java.util.concurrent.Callable;
+
 
 public class HelloApplication extends Application {
     InputControll inputControll = new InputControll();
     GridPane clickedGridPane;
     int indexOfRefEl;
     int afterNewTableCount = -1;
+
     @Override
     public void start(Stage primaryStage) {
         VBox vBox = new VBox();
@@ -122,7 +115,6 @@ public class HelloApplication extends Application {
         stepBack.setDisable(true);
         Button pickElButton = new Button("Выбрать опорный элемент");
         pickElButton.setDisable(true);
-        openButton.setDisable(true);
         hBoxVibor.getChildren().addAll(simplexButton,iskusstButton,poShagamButton, stepBack ,pickElButton);
         vBox.getChildren().add(hBoxVibor);
         vBox.getChildren().add(hBox);
@@ -146,6 +138,9 @@ public class HelloApplication extends Application {
                 simplexButton.setStyle("-fx-background-color: green;");
                 iskusstButton.setStyle("");
                 poShagamButton.setStyle("");
+                stepBack.setDisable(true);
+                pickElButton.setDisable(true);
+                inputControll.setIsSteps(false);
             }
         });
 
@@ -259,9 +254,12 @@ public class HelloApplication extends Application {
             @Override
             public void handle(ActionEvent event) {
                 inputControll.setMethod(1);
+                inputControll.setIsSteps(false);
                 iskusstButton.setStyle("-fx-background-color: green;");
                 poShagamButton.setStyle("");
                 simplexButton.setStyle("");
+                stepBack.setDisable(true);
+                pickElButton.setDisable(true);
                 hBox.getChildren().remove(6, hBox.getChildren().size());
             }
         });
@@ -287,6 +285,15 @@ public class HelloApplication extends Application {
         createButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                poShagamButton.setDisable(false);
+                iskusstButton.setDisable(false);
+                simplexButton.setDisable(false);
+
+                columnsComboBox.setDisable(false);
+                functionComboBox.setDisable(false);
+                rowsComboBox.setDisable(false);
+                numbersComboBox.setDisable(false);
+
                 if(inputControll.getMethod() == 2){
                     while (hBox.getChildren().size() > 6){
                         hBox.getChildren().remove(hBox.getChildren().size() - 1);
@@ -311,6 +318,8 @@ public class HelloApplication extends Application {
                 openButton.setDisable(false);
                 pickElButton.setDisable(true);
                 stepBack.setDisable(true);
+
+
             }
         });
 
@@ -318,6 +327,7 @@ public class HelloApplication extends Application {
             @Override
             public void handle(ActionEvent event) {
                 // Создаем новую таблицу
+
                 if(!inputControll.isSteps()){
                     inputControll.setGauss(false);
                     int row = rowsComboBox.getValue();
@@ -348,10 +358,21 @@ public class HelloApplication extends Application {
                         openButton.setDisable(true);
                         return;
                     }
+                    poShagamButton.setDisable(true);
+                    iskusstButton.setDisable(true);
+                    simplexButton.setDisable(true);
                     calculateButton.setDisable(true);
                     openButton.setDisable(true);
+
+                    columnsComboBox.setDisable(true);
+                    functionComboBox.setDisable(true);
+                    rowsComboBox.setDisable(true);
+                    numbersComboBox.setDisable(true);
+
                 }
                 else {
+                    pickElButton.setDisable(false);
+                    stepBack.setDisable(false);
                     if(inputControll.getMethod() == 1){
                         inputControll.setGauss(false);
                         int step = inputControll.getSteps();
@@ -371,6 +392,14 @@ public class HelloApplication extends Application {
                                 vBox.getChildren().add(new Label("Введено не число"));
                                 calculateButton.setDisable(true);
                             }
+                            poShagamButton.setDisable(true);
+                            iskusstButton.setDisable(true);
+                            simplexButton.setDisable(true);
+
+                            columnsComboBox.setDisable(true);
+                            functionComboBox.setDisable(true);
+                            rowsComboBox.setDisable(true);
+                            numbersComboBox.setDisable(true);
                         }
                         else{
                             clickedGridPane = (GridPane) vBox.getChildren().get(6 + inputControll.getSteps());
@@ -410,6 +439,15 @@ public class HelloApplication extends Application {
                     }
                     else {
                         inputControll.setGauss(true);
+                        poShagamButton.setDisable(true);
+                        iskusstButton.setDisable(true);
+                        simplexButton.setDisable(true);
+
+                        columnsComboBox.setDisable(true);
+                        functionComboBox.setDisable(true);
+                        rowsComboBox.setDisable(true);
+                        numbersComboBox.setDisable(true);
+
                         if(inputControll.getSteps() == 0)
                             inputControll.setSteps(1);
                         int step = inputControll.getSteps();
@@ -477,22 +515,48 @@ public class HelloApplication extends Application {
         openButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                openButton.setDisable(true);
-                int row = rowsComboBox.getValue();
-                int col = columnsComboBox.getValue();
+
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Open Resource File");
                 File file = fileChooser.showOpenDialog(null);
                 if (file != null) {
                     try {
                         Scanner scanner = new Scanner(file);
-                        vBox.getChildren().set(6, inputControll.readFile(row, col, file));
+                        int endIndex = vBox.getChildren().size() - 1;
+                        vBox.getChildren().remove(5, endIndex);
+                        vBox.getChildren().add(6, inputControll.readFile(file));
+                        columnsComboBox.setValue(inputControll.getColForTable());
+                        rowsComboBox.setValue(inputControll.getRowForTable());
                         vBox.getChildren().set(5, inputControll.getGridFunction());
                         scanner.close();
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
                 }
+                if(inputControll.getMethod() == 2){
+                    while (hBox.getChildren().size() > 6){
+                        hBox.getChildren().remove(hBox.getChildren().size() - 1);
+                    }
+                    for(int i = 0; i < columnsComboBox.getValue() - 1; i++){
+                        ComboBox<Integer> pickedBasis = new ComboBox<>();
+                        pickedBasis.getItems().addAll(0,1);
+                        pickedBasis.setValue(0);
+                        hBox.getChildren().add(pickedBasis);
+                    }
+                }
+                afterNewTableCount = -1;
+                inputControll.setOkCount(0);
+                inputControll.setSteps(0);
+
+                openButton.setDisable(true);
+                poShagamButton.setDisable(false);
+                iskusstButton.setDisable(false);
+                simplexButton.setDisable(false);
+
+                columnsComboBox.setDisable(false);
+                functionComboBox.setDisable(false);
+                rowsComboBox.setDisable(false);
+                numbersComboBox.setDisable(false);
             }
         });
 

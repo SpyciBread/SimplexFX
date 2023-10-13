@@ -25,6 +25,7 @@ public class InputControll {
     private boolean isGauss;
     private int steps = 0;
     private int okCount = 0;
+    private int rowForTable = 3, colForTable = 4;
     FractionalNumber fractionalNumber = new FractionalNumber();
     SimlexMethod simlexMethod = new SimlexMethod();
 
@@ -65,15 +66,7 @@ public class InputControll {
     }
 
     public boolean checkInput(String number){
-        if(isNormalDrob.equals("/")){
-            if (number.matches("^-?[1-9]\\d*(\\/[1-9]\\d*)?$") || number.matches("^0$")) {
-                return true;
-            }
-        }
-        else
-            if(number.matches("-?(0|[1-9]\\d*)(\\.\\d+)?") || number.matches("^0$"))
-                return true;
-       return false;
+        return number.matches("^-?[1-9]\\d*(\\/[1-9]\\d*)?$") || number.matches("^0$") || number.matches("-?(0|[1-9]\\d*)(\\.\\d+)?");
     }
 
     public GridPane createTable(int row, int col){
@@ -159,7 +152,18 @@ public class InputControll {
             for (int i = 0; i < answerTable.length; i++) {
                 //downFunction[i] = fractionalNumber.toDesDrob(downFunction[i]);
                 for (int j = 0; j < answerTable[0].length; j++) {
-                    answerTable[i][j] = fractionalNumber.toDesDrob(answerTable[i][j]);
+                    if(!answerTable[i][j].contains("."))
+                        answerTable[i][j] = fractionalNumber.toDesDrob(answerTable[i][j]);
+                }
+
+            }
+        }
+        if(isNormalDrob.equals("/")){
+            for (int i = 0; i < answerTable.length; i++) {
+                //downFunction[i] = fractionalNumber.toDesDrob(downFunction[i]);
+                for (int j = 0; j < answerTable[0].length; j++) {
+                    if(answerTable[i][j].contains("."))
+                        answerTable[i][j] = fractionalNumber.toStandartDrob(answerTable[i][j]);
                 }
 
             }
@@ -229,21 +233,32 @@ public class InputControll {
             simlexMethod = new SimlexMethod();
             String[][] limit = getTable();
             String[] func = getFunction();
-        if(step == 0)
+        if(step == 0){
             if(minOrMax.equals("max")) {
                 for(int i = 0; i < func.length; i++){
                     func[i] = replacingTheSign(func[i]);
                 }
+                simlexMethod.setMinStatus("max");
             }
+            else
+                simlexMethod.setMinStatus("min");
+        }
+
             for(int i = 0; i < limit.length; i++){
                 for (int j = 0; j < limit[0].length; j++){
                     if(!checkInput(limit[i][j]))
                         return "Введено не число";
+                    if(limit[i][j].contains(".")){
+                        limit[i][j] = simlexMethod.getFractionalNumber().toStandartDrob(limit[i][j]);
+                    }
                 }
             }
             for (int i = 0; i < func.length; i++){
                 if(!checkInput(func[i]))
                     return "Введено не число";
+                if(func[i].contains(".")){
+                    func[i] = simlexMethod.getFractionalNumber().toStandartDrob(func[i]);
+                }
             }
             for(int i = 0; i < limit.length; i++){
                 if(limit[i][limit[0].length - 1].charAt(0) == '-'){
@@ -330,16 +345,25 @@ public class InputControll {
             for(int i = 0; i < func.length; i++){
                func[i] = replacingTheSign(func[i]);
             }
+            simlexMethod.setMinStatus("max");
         }
+        else
+            simlexMethod.setMinStatus("min");
         for(int i = 0; i < limit.length; i++){
             for (int j = 0; j < limit[0].length; j++){
                 if(!checkInput(limit[i][j]))
                     return "Введено не число";
+                if(limit[i][j].contains(".")){
+                    limit[i][j] = simlexMethod.getFractionalNumber().toStandartDrob(limit[i][j]);
+                }
             }
         }
         for (int i = 0; i < func.length; i++){
             if(!checkInput(func[i]))
                 return "Введено не число";
+            if(func[i].contains(".")){
+                func[i] = simlexMethod.getFractionalNumber().toStandartDrob(func[i]);
+            }
         }
         for(int i = 0; i < limit.length; i++){
             if(limit[i][limit[0].length - 1].charAt(0) == '-'){
@@ -410,16 +434,25 @@ public class InputControll {
             for(int i = 0; i < func.length; i++){
                 func[i] = replacingTheSign(func[i]);
             }
+            simlexMethod.setMinStatus("max");
         }
+        else
+            simlexMethod.setMinStatus("min");
         for(int i = 0; i < limit.length; i++){
             for (int j = 0; j < limit[0].length; j++){
                 if(!checkInput(limit[i][j]))
                     return "Введено не число";
+                if(limit[i][j].contains(".")){
+                    limit[i][j] = simlexMethod.getFractionalNumber().toStandartDrob(limit[i][j]);
+                }
             }
         }
         for (int i = 0; i < func.length; i++){
             if(!checkInput(func[i]))
                 return "Введено не число";
+            if(func[i].contains(".")){
+                func[i] = simlexMethod.getFractionalNumber().toStandartDrob(func[i]);
+            }
         }
         for(int i = 0; i < limit.length; i++){
             if(limit[i][limit[0].length - 1].charAt(0) == '-'){
@@ -477,16 +510,25 @@ public class InputControll {
             for(int i = 0; i < func.length; i++){
                 func[i] = replacingTheSign(func[i]);
             }
+            simlexMethod.setMinStatus("max");
         }
+        else
+            simlexMethod.setMinStatus("min");
         for(int i = 0; i < limit.length; i++){
             for (int j = 0; j < limit[0].length; j++){
                 if(!checkInput(limit[i][j]))
                     return "Введено не число";
+                if(limit[i][j].contains(".")){
+                    limit[i][j] = simlexMethod.getFractionalNumber().toStandartDrob(limit[i][j]);
+                }
             }
         }
         for (int i = 0; i < func.length; i++){
             if(!checkInput(func[i]))
                 return "Введено не число";
+            if(func[i].contains(".")){
+                func[i] = simlexMethod.getFractionalNumber().toStandartDrob(func[i]);
+            }
         }
         for(int i = 0; i < limit.length; i++){
             if(limit[i][limit[0].length - 1].charAt(0) == '-'){
@@ -509,13 +551,34 @@ public class InputControll {
         return gauss.getSimlexMethod().getAnswer();
     }
 
-    public GridPane readFile(int row, int col, File file){
+    public GridPane readFile(File file){
         GridPane newGridPane = new GridPane();
-        String[][] limits = new String[row][col];
-        String[] function = new String[col - 1];
+        int row = 3; int col = 4;
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             int i = 0;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.trim().split("\\s+");
+                if(i == 0){
+                    i++;
+                }
+                else {
+                   col = values.length;
+                    i++;
+                }
+            }
+            row = i - 1;
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        rowForTable = row;
+        colForTable = col;
+        String[][] limits = new String[row][col];
+        String[] function = new String[col - 1];
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            int i = 0;
+            String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.trim().split("\\s+");
                 if(i == 0){
@@ -642,5 +705,21 @@ public class InputControll {
 
     public void setGauss(boolean gauss) {
         isGauss = gauss;
+    }
+
+    public int getRowForTable() {
+        return rowForTable;
+    }
+
+    public void setRowForTable(int rowForTable) {
+        this.rowForTable = rowForTable;
+    }
+
+    public int getColForTable() {
+        return colForTable;
+    }
+
+    public void setColForTable(int colForTable) {
+        this.colForTable = colForTable;
     }
 }

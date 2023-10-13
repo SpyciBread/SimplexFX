@@ -11,6 +11,7 @@ public class SimlexMethod {
     private String[] firstBasis;
     private String[] startNotBasis;
     private String[][] simplexTable;
+    private String minStatus = "min";
     private String[][] answerTable;
     private String minElInfo = "no";
     private int iteration;
@@ -222,4 +223,13 @@ public class SimlexMethod {
     public void decIterationForStep() {
         this.iterationForStep--;
     }
+
+    public String getMinStatus() {
+        return minStatus;
+    }
+
+    public void setMinStatus(String minStatus) {
+        this.minStatus = minStatus;
+    }
+
 }
