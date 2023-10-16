@@ -312,7 +312,7 @@ public class InputControll {
                     }
                 }
                 else {//тут проблема
-                    //if(step != 1)
+                    if(step != 1)
                         calculateSimlex.helpCalculateSimplexTablePoShagam(simlexMethod.getSimplexTable(),index);
                 }
             //}
@@ -454,19 +454,19 @@ public class InputControll {
                 func[i] = simlexMethod.getFractionalNumber().toStandartDrob(func[i]);
             }
         }
-        for(int i = 0; i < limit.length; i++){
-            if(limit[i][limit[0].length - 1].charAt(0) == '-'){
-                for (int j = 0; j < limit[0].length; j++)
-                    limit[i][j] = replacingTheSign(limit[i][j]);
-            }
-        }
-        CalculateSimlex calculateSimlex = new CalculateSimlex(simlexMethod, func, limit);
-        simlexMethod.setDownFunction(calculateSimlex.calcualteDownFunction(getTable()));
+//        for(int i = 0; i < limit.length; i++){
+//            if(limit[i][limit[0].length - 1].charAt(0) == '-'){
+//                for (int j = 0; j < limit[0].length; j++)
+//                    limit[i][j] = replacingTheSign(limit[i][j]);
+//            }
+//        }
+//        CalculateSimlex calculateSimlex = new CalculateSimlex(simlexMethod, func, limit);
+//        simlexMethod.setDownFunction(calculateSimlex.calcualteDownFunction(getTable()));
         //ArtificialBasisMethod artificialBasisMethod = new ArtificialBasisMethod(false, function, getTable(), calculateSimlex);
 //        if(!artificialBasisMethod.checkAnswer(simlexMethod, simlexMethod.getSimplexTable(), simlexMethod.getBasis()).equals("Ok")){
 //            return "Система несовместна или имеет бесконечно много решений";
 //        }
-        simlexMethod = new SimlexMethod();
+        //simlexMethod = new SimlexMethod();
         CalculateSimlex calculateSimlex2 = new CalculateSimlex(simlexMethod, func, limit);
         Gauss gauss = new Gauss(limit, basis, calculateSimlex2, func, true);
         if(gauss.getSimlexMethod().getAnswer() != null){
@@ -530,24 +530,29 @@ public class InputControll {
                 func[i] = simlexMethod.getFractionalNumber().toStandartDrob(func[i]);
             }
         }
-        for(int i = 0; i < limit.length; i++){
-            if(limit[i][limit[0].length - 1].charAt(0) == '-'){
-                for (int j = 0; j < limit[0].length; j++)
-                    limit[i][j] = replacingTheSign(limit[i][j]);
-            }
-        }
+//        for(int i = 0; i < limit.length; i++){
+//            if(limit[i][limit[0].length - 1].charAt(0) == '-'){
+//                for (int j = 0; j < limit[0].length; j++)
+//                    limit[i][j] = replacingTheSign(limit[i][j]);
+//            }
+//        }
 
 
 
-        CalculateSimlex calculateSimlex = new CalculateSimlex(simlexMethod, func, limit);
-        simlexMethod.setDownFunction(calculateSimlex.calcualteDownFunction(getTable()));
-        ArtificialBasisMethod artificialBasisMethod = new ArtificialBasisMethod(false, function, getTable(), calculateSimlex);
-        if(!artificialBasisMethod.checkAnswer(simlexMethod, simlexMethod.getSimplexTable(), simlexMethod.getBasis()).equals("Ok")){
-            return "Система несовместна или имеет бесконечно много решений";
-        }
-        simlexMethod = new SimlexMethod();
+//        CalculateSimlex calculateSimlex = new CalculateSimlex(simlexMethod, func, limit);
+//        simlexMethod.setDownFunction(calculateSimlex.calcualteDownFunction(getTable()));
+////        ArtificialBasisMethod artificialBasisMethod = new ArtificialBasisMethod(false, function, getTable(), calculateSimlex);
+////        if(!artificialBasisMethod.checkAnswer(simlexMethod, simlexMethod.getSimplexTable(), simlexMethod.getBasis()).equals("Ok")){
+////            return "Система несовместна или имеет бесконечно много решений";
+////        }
+//        simlexMethod = new SimlexMethod();
         CalculateSimlex calculateSimlex2 = new CalculateSimlex(simlexMethod, func, limit);
         Gauss gauss = new Gauss(limit, basis, calculateSimlex2, func, false);
+        if(gauss.getSimlexMethod().getAnswer() != null){
+            if(gauss.getSimlexMethod().getAnswer().equals("Система несовместна")){
+                return gauss.getSimlexMethod().getAnswer();
+            }
+        }
         return gauss.getSimlexMethod().getAnswer();
     }
 

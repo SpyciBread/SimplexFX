@@ -350,8 +350,12 @@ public class HelloApplication extends Application {
                     int endIndex = vBox.getChildren().size() - 1;
                     vBox.getChildren().remove(6, endIndex);
                     vBox.getChildren().add(answer);
-                    if(!answer.getText().equals("Введено не число") || !answer.getText().equals("Неверно введен базис"))
-                        vBox.getChildren().add(inputControll.tableAnswer(row,col));
+                    if(!answer.getText().equals("Введено не число") && !answer.getText().equals("Неверно введен базис"))
+                        if(answer.getText().equals("Система несовместна") && inputControll.getMethod() == 2){
+                            vBox.getChildren().add(inputControll.tableAnswerGauss());
+                        }
+                        else
+                            vBox.getChildren().add(inputControll.tableAnswer(row,col));
                     else
                     {
                         calculateButton.setDisable(true);

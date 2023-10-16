@@ -57,10 +57,41 @@ public class Gauss {
         setX(basis);
         int row = 0;
         int p = 0;
+
         for (int i = 0; i < matrix.length; i++){
             p = 0;
             for (int j = 0; j < matrix[0].length; j++){
+
                 if(basis[p] != 0){
+
+                    String[][] subMatrix = new String[simlexMethod.getStartBasis().length][simlexMethod.getStartBasis().length];
+                    int kk = 0;
+                    for (int k = 0; k < matrix[0].length - 1; k++){
+                        if(startBasis[k] == 1){
+                            for (int rowIn = 0; rowIn < matrix.length; rowIn++)
+                                subMatrix[rowIn][kk] = matrix[rowIn][k];
+                            kk++;
+                        }
+                    }
+                    if(determinant(subMatrix).equals("0")){
+                        basis[p] = 0;
+                        for (int k = 0; k < startBasis.length; k++){//нужно сделать как следует
+                            if(startBasis[k] != 1 && !matrix[matrix.length - 1][k].equals("0")){
+                                startBasis[p] = 0;
+                                startBasis[k] = 1;
+                                basis = Arrays.copyOfRange(startBasis, 0, startBasis.length);
+                                row = 0;
+                                j = 0;
+                                i = 0;
+                                p = 0;
+                                setX(basis);
+                                calculateGauss(matrix,basis);
+                                return;
+                            }
+
+                        }
+                    }
+
                     int col = j;
                     String obrNumber;
                     if(matrix[i][j].charAt(0) != '0'){
@@ -95,21 +126,31 @@ public class Gauss {
                         break;
                     }
                     else {
-                        basis[p] = 0;
-                        for (int k = 0; k < startBasis.length; k++){
-                            if(startBasis[k] != 1 && !matrix[matrix.length - 1][k].equals("0")){
-                                startBasis[p] = 0;
-                                startBasis[k] = 1;
-                                basis = Arrays.copyOfRange(startBasis, 0, startBasis.length);
-                                row = 0;
-                                j = 0;
-                                i = 0;
-                                p = 0;
-                                setX(basis);
-                                break;
-                            }
+                        for (int k = 0; k < matrix.length; k++){
+                            if(!matrix[k][j].equals("0")){
+                                for (int g = 0; g < matrix[0].length; g++){
+                                    matrix[i][g] = operationWithTwoNumbers(matrix[i][g], matrix[k][g],"+");
 
+                                }
+                                calculateGauss(matrix,basis);
+                                return;
+                            }
                         }
+//                        basis[p] = 0;
+//                        for (int k = 0; k < startBasis.length; k++){
+//                            if(startBasis[k] != 1 && !matrix[matrix.length - 1][k].equals("0")){
+//                                startBasis[p] = 0;
+//                                startBasis[k] = 1;
+//                                basis = Arrays.copyOfRange(startBasis, 0, startBasis.length);
+//                                row = 0;
+//                                j = 0;
+//                                i = 0;
+//                                p = 0;
+//                                setX(basis);
+//                                break;
+//                            }
+//
+//                        }
                     }
                 }
                 if(p < matrix[0].length - 2)
@@ -171,35 +212,41 @@ public class Gauss {
             simlexMethod.setAnswer("Система несовместна");
             return;
         }
-        boolean isRebase = false;
-        for (int i = 0; i < matrix.length ; i++){
+//        boolean isRebase = false;
+//        for (int i = 0; i < matrix.length ; i++){
+//            if(matrix[i][matrix[0].length - 1].charAt(0) == '-'){
+//                int k = 0;
+//                for(int j = 0; j < startBasis.length; j++){
+//                    if(startBasis[j] == 1 && k == i){
+//                        for(int l = 0; l < startBasis.length; l++){
+//                            if(startBasis[l] == 0){
+//                                startBasis[l] = 1;
+//                                isRebase = true;
+//                                startBasis[j] = 0;
+//                                break;
+//                            }
+//                        }
+//
+//                    }
+//                    if(isRebase){
+//                        break;
+//                    }
+//                    if(startBasis[j] == 1 && k != i)
+//                        k++;
+//                }
+//            }
+//            if(isRebase){
+//                basis = Arrays.copyOf(startBasis, startBasis.length);
+//                calculateGauss(matrix,basis);
+//            }
+//        }
+        String[][] simplexTable;
+        for(int i = 0;  i < matrix.length - 1; i++){
             if(matrix[i][matrix[0].length - 1].charAt(0) == '-'){
-                int k = 0;
-                for(int j = 0; j < startBasis.length; j++){
-                    if(startBasis[j] == 1 && k == i){
-                        for(int l = 0; l < startBasis.length; l++){
-                            if(startBasis[l] == 0){
-                                startBasis[l] = 1;
-                                isRebase = true;
-                                startBasis[j] = 0;
-                                break;
-                            }
-                        }
-
-                    }
-                    if(isRebase){
-                        break;
-                    }
-                    if(startBasis[j] == 1 && k != i)
-                        k++;
-                }
-            }
-            if(isRebase){
-                basis = Arrays.copyOf(startBasis, startBasis.length);
-                calculateGauss(matrix,basis);
+                simlexMethod.setAnswer("Недопустимый базис");
+                return;
             }
         }
-        String[][] simplexTable;
         if(!isSteps)
             simplexTable = newSimplexTable(matrix);
 //        for (int i = 0; i < simplexTable.length; i++) {
@@ -207,11 +254,48 @@ public class Gauss {
 //        }
     }
 
+    public String determinant(String[][] matrix) {
+        int n = matrix.length;
+        String det = "0";
+
+        if (n == 1) {
+            det = matrix[0][0];
+        } else if (n == 2) {
+            String tmp = operationWithTwoNumbers(matrix[0][0], matrix[1][1],"*");
+            String tmp2 = operationWithTwoNumbers(matrix[0][1], matrix[1][0],"*");
+            det = operationWithTwoNumbers(tmp, tmp2,"-");
+        } else {
+            for (int i = 0; i < n; i++) {
+                String[][] subMatrix = new String[n - 1][n - 1];
+                for (int j = 1; j < n; j++) {
+                    for (int k = 0; k < n; k++) {
+                        if (k < i) {
+                            subMatrix[j - 1][k] = matrix[j][k];
+                        } else if (k > i) {
+                            subMatrix[j - 1][k - 1] = matrix[j][k];
+                        }
+                    }
+                }
+                if(i % 2 == 0){
+                    String tmp = operationWithTwoNumbers(matrix[0][i], determinant(subMatrix),"*");
+                    det = operationWithTwoNumbers(det,tmp, "+");
+                }else{
+                    String tmp = operationWithTwoNumbers(matrix[0][i], determinant(subMatrix),"*");
+                    String tmp2 = operationWithTwoNumbers("-1", tmp,"*");
+                    det = operationWithTwoNumbers(det,tmp2, "+");
+                }
+            }
+        }
+
+        return det;
+    }
+
+
     public String checkSystem(String[][] matrix){
         boolean onlyZeros = true;
         int count = 0;
         for (int i = 0; i <  matrix.length; i++) {
-            for (int j = 0; j <  matrix[i].length; j++) {
+            for (int j = 0; j <  matrix[i].length - 1; j++) {
                 if (!matrix[i][j].equals("0")) {
                     onlyZeros = false;
                     count++;
@@ -262,6 +346,7 @@ public class Gauss {
                 newSimplexTable[i][k] = simplexTable[i][simplexTable[0].length - 1];
             }
         }
+
         String[] downF = new String[newSimplexTable[0].length];
         for(int i = 0; i < downF.length; i++)
             downF[i] = "0";
@@ -329,6 +414,7 @@ public class Gauss {
                 newSimplexTable[i][k] = simplexTable[i][simplexTable[0].length - 1];
             }
         }
+
         String[] downF = new String[newSimplexTable[0].length];
         for(int i = 0; i < downF.length; i++)
             downF[i] = "0";
