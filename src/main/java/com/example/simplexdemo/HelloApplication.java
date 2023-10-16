@@ -351,7 +351,8 @@ public class HelloApplication extends Application {
                     vBox.getChildren().remove(6, endIndex);
                     vBox.getChildren().add(answer);
                     if(!answer.getText().equals("Введено не число") && !answer.getText().equals("Неверно введен базис"))
-                        if(answer.getText().equals("Система несовместна") && inputControll.getMethod() == 2){
+                        if((answer.getText().equals("Система несовместна") || answer.getText().equals("Недопустимый базис")
+                                || answer.getText().equals("Невозможно привести к единичной матрице при таком базисе")) && inputControll.getMethod() == 2){
                             vBox.getChildren().add(inputControll.tableAnswerGauss());
                         }
                         else
@@ -469,7 +470,9 @@ public class HelloApplication extends Application {
                             inputControll.gaussPoshagam(pickbasis);
                             vBox.getChildren().add(inputControll.tableAnswerGauss());
                             if(inputControll.getSimlexMethod().getAnswer()!=null)
-                                if(inputControll.getSimlexMethod().getAnswer().equals("Система несовместна")){
+                                if(inputControll.getSimlexMethod().getAnswer().equals("Система несовместна") ||
+                                        inputControll.getSimlexMethod().getAnswer().equals("Недопустимый базис") ||
+                                        inputControll.getSimlexMethod().getAnswer().equals("Невозможно привести к единичной матрице при таком базисе")){
                                     Label badAnswer = new Label(inputControll.getSimlexMethod().getAnswer());
                                     vBox.getChildren().add(badAnswer);
                                     calculateButton.setDisable(true);

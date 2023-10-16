@@ -470,7 +470,8 @@ public class InputControll {
         CalculateSimlex calculateSimlex2 = new CalculateSimlex(simlexMethod, func, limit);
         Gauss gauss = new Gauss(limit, basis, calculateSimlex2, func, true);
         if(gauss.getSimlexMethod().getAnswer() != null){
-            if(gauss.getSimlexMethod().getAnswer().equals("Система несовместна")){
+            if(gauss.getSimlexMethod().getAnswer().equals("Система несовместна") || gauss.getSimlexMethod().getAnswer().equals("Недопустимый базис")
+            || gauss.getSimlexMethod().getAnswer().equals("Невозможно привести к единичной матрице при таком базисе")){
                 return gauss.getSimlexMethod().getAnswer();
             }
             else

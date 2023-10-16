@@ -74,22 +74,25 @@ public class Gauss {
                         }
                     }
                     if(determinant(subMatrix).equals("0")){
-                        basis[p] = 0;
-                        for (int k = 0; k < startBasis.length; k++){//нужно сделать как следует
-                            if(startBasis[k] != 1 && !matrix[matrix.length - 1][k].equals("0")){
-                                startBasis[p] = 0;
-                                startBasis[k] = 1;
-                                basis = Arrays.copyOfRange(startBasis, 0, startBasis.length);
-                                row = 0;
-                                j = 0;
-                                i = 0;
-                                p = 0;
-                                setX(basis);
-                                calculateGauss(matrix,basis);
-                                return;
-                            }
+                        simlexMethod.setGaussTable(matrix);
+                        simlexMethod.setAnswer("Невозможно привести к единичной матрице при таком базисе");
+                        return;
+//                        basis[p] = 0;
+//                        for (int k = 0; k < startBasis.length; k++){//нужно сделать как следует
+//                            if(startBasis[k] != 1 && !matrix[matrix.length - 1][k].equals("0")){
+//                                startBasis[p] = 0;
+//                                startBasis[k] = 1;
+//                                basis = Arrays.copyOfRange(startBasis, 0, startBasis.length);
+//                                row = 0;
+//                                j = 0;
+//                                i = 0;
+//                                p = 0;
+//                                setX(basis);
+//                                calculateGauss(matrix,basis);
+//                                return;
+//                            }
 
-                        }
+//                        }
                     }
 
                     int col = j;
@@ -126,7 +129,7 @@ public class Gauss {
                         break;
                     }
                     else {
-                        for (int k = 0; k < matrix.length; k++){
+                        for (int k = 0; k < matrix.length; k++){//тут нужно сделать, чтобы не снизу
                             if(!matrix[k][j].equals("0")){
                                 for (int g = 0; g < matrix[0].length; g++){
                                     matrix[i][g] = operationWithTwoNumbers(matrix[i][g], matrix[k][g],"+");
@@ -241,7 +244,7 @@ public class Gauss {
 //            }
 //        }
         String[][] simplexTable;
-        for(int i = 0;  i < matrix.length - 1; i++){
+        for(int i = 0;  i < matrix.length; i++){
             if(matrix[i][matrix[0].length - 1].charAt(0) == '-'){
                 simlexMethod.setAnswer("Недопустимый базис");
                 return;
