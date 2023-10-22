@@ -34,6 +34,7 @@ public class InputControll {
         String[][] matrix = new String[row][col];
         ComboBox minMax = (ComboBox)gridPaneFunction.getChildren().get(2*col - 1);
         isNormalDrob = drob;
+        simlexMethod.setZnakDrobi(drob);
         minOrMax = minMax.getValue().toString();
         int startIndex = row + col - 1;
         int endIndex = row * col + startIndex;
@@ -147,17 +148,18 @@ public class InputControll {
             downFunction =  Arrays.copyOfRange(answerTable[answerTable.length - 1], 0, answerTable.length - 1);
         }
         int indexForDownFunc = 0;
+        if(!isSteps)
+            if(isNormalDrob.equals(".")){
+                //for (int i = 0; i < answerTable.length; i++) {
+                    simlexMethod.setZnakDrobi(".");
+                    //downFunction[i] = fractionalNumber.toDesDrob(downFunction[i]);
+//                    for (int j = 0; j < answerTable[0].length; j++) {
+//                        if(!answerTable[i][j].contains("."))
+//                            answerTable[i][j] = fractionalNumber.toDesDrob(answerTable[i][j]);
+//                    }
 
-        if(isNormalDrob.equals(".")){
-            for (int i = 0; i < answerTable.length; i++) {
-                //downFunction[i] = fractionalNumber.toDesDrob(downFunction[i]);
-                for (int j = 0; j < answerTable[0].length; j++) {
-                    if(!answerTable[i][j].contains("."))
-                        answerTable[i][j] = fractionalNumber.toDesDrob(answerTable[i][j]);
-                }
-
+               // }
             }
-        }
         if(isNormalDrob.equals("/")){
             for (int i = 0; i < answerTable.length; i++) {
                 //downFunction[i] = fractionalNumber.toDesDrob(downFunction[i]);
@@ -231,6 +233,7 @@ public class InputControll {
     public String poShagam(int step, int index){
         if(step == 0)
             simlexMethod = new SimlexMethod();
+        simlexMethod.setZnakDrobi(isNormalDrob);
             String[][] limit = getTable();
             String[] func = getFunction();
         if(step == 0){
@@ -339,6 +342,7 @@ public class InputControll {
 
     public String iskBasis(){
         simlexMethod = new SimlexMethod();
+        simlexMethod.setZnakDrobi(isNormalDrob);
         String[][] limit = getTable();
         String[] func = getFunction();
         if(minOrMax.equals("max")) {
@@ -382,16 +386,14 @@ public class InputControll {
     public GridPane tableAnswerGauss(){
         GridPane newGridPane = new GridPane();
         String[][] answerTable = simlexMethod.getGaussTable();
-
-        if(isNormalDrob.equals(".")){
-            for (int i = 0; i < answerTable.length; i++) {
-                //downFunction[i] = fractionalNumber.toDesDrob(downFunction[i]);
-                for (int j = 0; j < answerTable[0].length; j++) {
-                    answerTable[i][j] = fractionalNumber.toDesDrob(answerTable[i][j]);
-                }
-
+            if(isNormalDrob.equals(".")){
+                simlexMethod.setZnakDrobi(".");
+//                for (int i = 0; i < answerTable.length; i++) {
+//                    for (int j = 0; j < answerTable[0].length; j++) {
+//                        answerTable[i][j] = fractionalNumber.toDesDrob(answerTable[i][j]);
+//                    }
+//                }
             }
-        }
 
         // Создаем ячейки с данными
         for (int i = 0; i < answerTable.length; i++) {
@@ -407,6 +409,7 @@ public class InputControll {
 
     public String gaussPoshagam(int[] basis){
         simlexMethod = new SimlexMethod();
+        simlexMethod.setZnakDrobi(isNormalDrob);
         String[][] limit = getTable();
         String[] func = getFunction();
         int rang = 0;
@@ -484,6 +487,7 @@ public class InputControll {
 
     public String gauss(int[] basis){
         simlexMethod = new SimlexMethod();
+        simlexMethod.setZnakDrobi(isNormalDrob);
         String[][] limit = getTable();
         String[] func = getFunction();
         int rang = 0;

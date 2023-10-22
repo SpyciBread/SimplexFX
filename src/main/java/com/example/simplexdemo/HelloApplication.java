@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -18,6 +19,8 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 
 import java.util.Scanner;
@@ -106,6 +109,9 @@ public class HelloApplication extends Application {
         Button calculateButton = new Button("Решить");
         Button createButton = new Button("Создать");
         Button openButton = new Button("Считать из файла");
+        Button info = new Button("Справка");
+        Button saveButton =new Button("Сохранить в файл");
+        saveButton.setDisable(true);
 
         Button simplexButton = new Button("Симплекс метод");
         Button iskusstButton = new Button("Искусственный базис");
@@ -115,7 +121,7 @@ public class HelloApplication extends Application {
         stepBack.setDisable(true);
         Button pickElButton = new Button("Выбрать опорный элемент");
         pickElButton.setDisable(true);
-        hBoxVibor.getChildren().addAll(simplexButton,iskusstButton,poShagamButton, stepBack ,pickElButton);
+        hBoxVibor.getChildren().addAll(simplexButton,iskusstButton,poShagamButton, stepBack ,pickElButton, saveButton, info);
         vBox.getChildren().add(hBoxVibor);
         vBox.getChildren().add(hBox);
         vBox.getChildren().add(createButton);
@@ -144,15 +150,63 @@ public class HelloApplication extends Application {
             }
         });
 
+        info.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Stage stage = new Stage();
+                stage.setTitle("Справка");
+                VBox vBox1 = new VBox();
+                String infoString = "1) Программа решает задачу:\n" +
+                        "   1.Симплекс методом(так же по шагам).\n" +
+                        "   2.Методом искусственного базиса(так же по шагам).\n" +
+                        "2) Ввод данных может производиться как из файла, так и вручную.\n" +
+                        "3) Есть возможность записи ответа в файл.\n" +
+                        "Окно с выбором . или / означает в каком виде будет представлен ответ";
+                Label label = new Label(infoString);
+                vBox1.getChildren().add(label);
+                Scene scene = new Scene(vBox1, 200, 100);
+                stage.setScene(scene);
+                stage.show();
+            }
+        });
+
+        saveButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                FileChooser fileChooser = new FileChooser();
+
+                fileChooser.setTitle("Сохранить файл");
+
+                FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+                fileChooser.getExtensionFilters().add(extFilter);
+
+                fileChooser.setInitialFileName("file.txt");
+
+                File file = fileChooser.showSaveDialog(null);
+
+                if (file != null){
+                    try {
+                        FileWriter fileWriter = new FileWriter(file);
+                        fileWriter.write(inputControll.getSimlexMethod().getAnswer());
+                        fileWriter.close();
+                    } catch (IOException ex) {
+                        System.out.println(ex.getMessage());
+                    }
+                }
+            }
+        });
+
         stepBack.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 int needStep;
+
                 if(inputControll.getIsGauss())
                     needStep = 2;
                 else
                     needStep = 1;
                 if(inputControll.getSteps() > needStep){
+                    saveButton.setDisable(true);
                     calculateButton.setDisable(true);
                     pickElButton.setDisable(false);
                     int endIndex = vBox.getChildren().size();
@@ -215,6 +269,7 @@ public class HelloApplication extends Application {
             @Override
             public void handle(ActionEvent event) {
                 //calculateButton.setDisable(false);
+                if(inputControll.getSteps() > 0){
                 clickedGridPane = (GridPane) vBox.getChildren().get(6 + inputControll.getSteps());
                 int endIndex = clickedGridPane.getChildren().size();
                 int startIndex = endIndex - inputControll.getSimlexMethod().getSimplexTable()[0].length;
@@ -233,6 +288,7 @@ public class HelloApplication extends Application {
                     Label badAnswer = new Label(inputControll.getSimlexMethod().getAnswer());
                     vBox.getChildren().add(badAnswer);
                     //inputControll.addSteps();
+                    saveButton.setDisable(false);
                     pickElButton.setDisable(true);
                 }
                 //inputControll.addSteps();
@@ -247,6 +303,7 @@ public class HelloApplication extends Application {
                         }
                     }
                 }
+            }
             }
         });
 
@@ -285,6 +342,7 @@ public class HelloApplication extends Application {
         createButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                saveButton.setDisable(true);
                 poShagamButton.setDisable(false);
                 iskusstButton.setDisable(false);
                 simplexButton.setDisable(false);
@@ -374,6 +432,7 @@ public class HelloApplication extends Application {
                     rowsComboBox.setDisable(true);
                     numbersComboBox.setDisable(true);
 
+                    saveButton.setDisable(false);
                 }
                 else {
                     pickElButton.setDisable(false);
@@ -564,6 +623,7 @@ public class HelloApplication extends Application {
                 functionComboBox.setDisable(false);
                 rowsComboBox.setDisable(false);
                 numbersComboBox.setDisable(false);
+                saveButton.setDisable(true);
             }
         });
 

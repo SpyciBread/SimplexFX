@@ -4,6 +4,8 @@ import java.util.*;
 
 public class SimlexMethod {
     private FractionalNumber fractionalNumber = new FractionalNumber();
+    private String znakDrobi = "/";
+    private String[][] nullAnswer = new String[][]{{"s"}, {"s"}};
     private String[][] limitations;
     private String[][] gaussTable;
     private String[] notBasis;
@@ -25,6 +27,23 @@ public class SimlexMethod {
     private HashMap<Integer,String[][]> tableSteps;
     private HashMap<Integer,String[]> basisSteps;
     private HashMap<Integer,String[]> notBasisSteps;
+
+
+    public String[][] getNullAnswer() {
+        return nullAnswer;
+    }
+
+    public void setNullAnswer(String[][] nullAnswer) {
+        this.nullAnswer = nullAnswer;
+    }
+
+    public String getZnakDrobi() {
+        return znakDrobi;
+    }
+
+    public void setZnakDrobi(String znakDrobi) {
+        this.znakDrobi = znakDrobi;
+    }
 
     public String[][] getGaussTable() {
         return gaussTable;
