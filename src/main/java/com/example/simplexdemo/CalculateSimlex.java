@@ -132,8 +132,20 @@ public class CalculateSimlex {
         getAnswer(simplexTable,basis,simlexMethod.getNotBasis());
         for (int i = 0; i < simplexTable[0].length - 1; i++){
             if(simplexTable[simplexTable.length - 1][i].charAt(0) == '-'){
-                simlexMethod.setAnswer("Функция неограничена");
-                return "Функция неограничена";
+//                int k = 0;
+//                for(int j = 0; j < simplexTable.length; j++){
+//                    if(simplexTable[j][i].charAt(0) == '-' || simplexTable[j][i].equals("0")){
+//                        k++;
+//                    }
+//                    else {
+//                        k = 0;
+//                        break;
+//                    }
+//                }
+//                if(k == simplexTable.length - 1){
+                    simlexMethod.setAnswer("Функция неограничена");
+                    return "Функция неограничена";
+               // }
             }
         }
         if(!isGauss)

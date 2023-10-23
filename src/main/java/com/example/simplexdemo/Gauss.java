@@ -130,10 +130,9 @@ public class Gauss {
                     }
                     else {
                         for (int k = 0; k < matrix.length; k++){//тут нужно сделать, чтобы не снизу
-                            if(!matrix[k][j].equals("0")){
+                            if(!matrix[k][j].equals("0") && i >= p){
                                 for (int g = 0; g < matrix[0].length; g++){
                                     matrix[i][g] = operationWithTwoNumbers(matrix[i][g], matrix[k][g],"+");
-
                                 }
                                 calculateGauss(matrix,basis);
                                 return;

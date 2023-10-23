@@ -161,10 +161,13 @@ public class HelloApplication extends Application {
                         "   2.Методом искусственного базиса(так же по шагам).\n" +
                         "2) Ввод данных может производиться как из файла, так и вручную.\n" +
                         "3) Есть возможность записи ответа в файл.\n" +
-                        "Окно с выбором . или / означает в каком виде будет представлен ответ";
+                        "Окно с выбором . или / означает в каком виде будет представлен ответ\n" +
+                        "Дроби обозначаются либо через . либо через /\n" +
+                        "Для чтения задачи из файла необходимо переписать коэфициенты перед X, разделённые пробелом,\n первой строкой идет функция, которую нужно min/max(в файле не нужно указывать что делать с функцией)," +
+                        " далее, на каждой новой строке идут ограничения(каждое с новой строки)";
                 Label label = new Label(infoString);
                 vBox1.getChildren().add(label);
-                Scene scene = new Scene(vBox1, 200, 100);
+                Scene scene = new Scene(vBox1, 300, 300);
                 stage.setScene(scene);
                 stage.show();
             }
@@ -631,6 +634,7 @@ public class HelloApplication extends Application {
         scrollPane.setContent(vBox);
 
         Scene scene = new Scene(scrollPane, 400, 400);
+        primaryStage.setTitle("Simplex");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
